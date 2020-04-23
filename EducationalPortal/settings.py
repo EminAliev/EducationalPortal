@@ -25,6 +25,9 @@ SECRET_KEY = 's+g4ycfmw0z)o^t2lh=rcx#9ed_2&b!2oqd1o%l+=m%wkk+2p='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+AUTH_USER_MODEL = 'users.User'
+
+
 ALLOWED_HOSTS = []
 
 
@@ -38,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'courses',
+    'users',
 ]
 
 MIDDLEWARE = [

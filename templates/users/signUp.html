@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="row center">
+    <h3>Register </h3>
+</div>
+<form id="register-form" name="register-form" class="nobottommargin" action="{% url 'register' %}" method="post">
+    {% csrf_token %}
+        <label for="{{ form.email.id_for_label }}">Email Address:</label>
+        {{ form.email }}
+
+        <label for="{{ form.username.id_for_label }}">Choose a Username:</label>
+        {{ form.username }}
+
+
+        <label for="{{ form.password.id_for_label }}">Choose Password:</label>
+        {{ form.password }}
+
+
+        <label for="{{ form.confirm_password.id_for_label }}">Re-enter Password:</label>
+        {{ form.confirm_password }}
+
+
+        <button  id="submit" value="register" >Register Now
+        </button>
+    <a href="{% url 'login' %}" class="fright">Login</a></form>
+
+</body>
+</html>

@@ -2,19 +2,42 @@ from django.db import models
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=250)
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=250, verbose_name='Название предмета')
+    slug = models.SlugField(unique=True, verbose_name='Слаг предмета')
+
+    class Meta:
+        verbose_name = 'Предмет'
+        verbose_name_plural = 'Предметы'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
-    subject = models.ForeignKey(Subject, related_name="courses", on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
-    slug = models.SlugField(unique=True)
-    view = models.TextField()
-    date_created = models.DateTimeField(auto_now_add=True)
+    subject = models.ForeignKey(Subject, related_name="courses", on_delete=models.CASCADE, verbose_name='Предмет курса')
+    name = models.CharField(max_length=250, verbose_name='Название курса')
+    slug = models.SlugField(unique=True, verbose_name='Слаг курса')
+    view = models.TextField(verbose_name='Описание курса')
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания курса')
+
+    class Meta:
+        verbose_name = 'Курс'
+        verbose_name_plural = 'Курсы'
+        ordering = ['-date_created']
+
+    def __str__(self):
+        return self.name
 
 
 class Module(models.Model):
-    course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
-    definition = models.TextField(blank=True)
+    course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE, verbose_name='Курс модуля')
+    name = models.CharField(max_length=250, verbose_name='Название модуля')
+    definition = models.TextField(blank=True, verbose_name='Описание модуля')
+
+    class Meta:
+        verbose_name = 'Модуль'
+        verbose_name_plural = 'Модули'
+
+    def __str__(self):
+        return self.name
