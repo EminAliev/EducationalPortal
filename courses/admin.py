@@ -3,7 +3,7 @@ from django.contrib import admin
 from courses.models import Course, Module, Subject
 
 
-class ModuleInline(object):
+class ModuleInline(admin.StackedInline):
     model = Module
 
 
