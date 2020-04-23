@@ -4,7 +4,7 @@ from courses.models import Course, Module, Subject
 
 
 class ModuleInline(object):
-    pass
+    model = Module
 
 
 @admin.register(Course)
