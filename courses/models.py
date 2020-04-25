@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
+from courses.fields import SortField
 from users.models import User
 
 
@@ -40,13 +41,15 @@ class Module(models.Model):
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE, verbose_name='Курс модуля')
     name = models.CharField(max_length=250, verbose_name='Название модуля')
     definition = models.TextField(blank=True, verbose_name='Описание модуля')
+    sort = SortField(blank=True, fields=['course'])
 
     class Meta:
+        ordering = ['sort']
         verbose_name = 'Модуль'
         verbose_name_plural = 'Модули'
 
     def __str__(self):
-        return self.name
+        return '{}. {}'.format(self.sort, self.name)
 
 
 class Content(models.Model):
@@ -59,8 +62,10 @@ class Content(models.Model):
         'file')})
     obj_id = models.PositiveIntegerField()
     item = GenericForeignKey('type', 'obj_id')
+    sort = SortField(blank=True, fields=['module'])
 
     class Meta:
+        ordering = ['sort']
         verbose_name = 'Контент'
 
 
