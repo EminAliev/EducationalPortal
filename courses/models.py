@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.utils import timezone
+
+from users.models import User
 
 
 class Subject(models.Model):
@@ -18,6 +19,8 @@ class Subject(models.Model):
 
 
 class Course(models.Model):
+    user = models.ForeignKey(User, related_name='courses_created', on_delete=models.CASCADE,
+                             verbose_name='Пользователь')
     subject = models.ForeignKey(Subject, related_name="courses", on_delete=models.CASCADE, verbose_name='Предмет курса')
     name = models.CharField(max_length=250, verbose_name='Название курса')
     slug = models.SlugField(unique=True, verbose_name='Слаг курса')
@@ -49,9 +52,16 @@ class Module(models.Model):
 class Content(models.Model):
     module = models.ForeignKey(Module, related_name='contents', on_delete=models.CASCADE,
                                verbose_name="Содержимое модуля")
-    type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to={'model__in': (
+        'text',
+        'video',
+        'image',
+        'file')})
     obj_id = models.PositiveIntegerField()
     item = GenericForeignKey('type', 'obj_id')
+
+    class Meta:
+        verbose_name = 'Контент'
 
 
 class AbstractContent(models.Model):
@@ -62,14 +72,43 @@ class AbstractContent(models.Model):
         abstract = True
 
 
-class Text(AbstractContent):
-    words = models.TextField(verbose_name="Текст")
+class AbstractItem(models.Model):
+    user = models.ForeignKey(User, related_name='%(class)s_related', on_delete=models.CASCADE,
+                             verbose_name="Пользователь")
+    name = models.CharField(max_length=300, verbose_name="Название")
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    data_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
-
-class SortingContent(AbstractContent):
     class Meta:
-        proxy = True
-        ordering = ['date_created']
+        abstract = True
 
-    def time(self):
-        return timezone.now() - self.date_created
+    def __str__(self):
+        return self.name
+
+
+class Text(AbstractItem):
+    text = models.TextField(verbose_name="Текст")
+
+    class Meta:
+        verbose_name = 'Текст'
+
+
+class File(AbstractItem):
+    file = models.FileField(upload_to='files', verbose_name="Файл")
+
+    class Meta:
+        verbose_name = 'Файлы'
+
+
+class Image(AbstractItem):
+    image = models.FileField(upload_to='images', verbose_name="Изображение")
+
+    class Meta:
+        verbose_name = 'Изображения'
+
+
+class Video(AbstractItem):
+    path = models.URLField(verbose_name="Ссылка")
+
+    class Meta:
+        verbose_name = 'Видео'
