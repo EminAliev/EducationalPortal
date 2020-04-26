@@ -12,9 +12,9 @@ class UserMixin(object):
 
 
 class UserEditMixin(object):
-    def validate(self, form):
+    def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(UserEditMixin, self).validate(form)
+        return super(UserEditMixin, self).form_valid(form)
 
 
 class UserCourseMixin(UserMixin, LoginRequiredMixin):
@@ -26,7 +26,7 @@ class UserCourseMixin(UserMixin, LoginRequiredMixin):
 class UserCourseEditMixin(UserCourseMixin, UserEditMixin):
     fields = ['subject', 'name', 'slug', 'view']
     success_url = reverse_lazy('course_list')
-    template_name = ''
+    template_name = 'courses/create_course.html'
 
 
 class CourseView(UserCourseMixin, ListView):
@@ -35,12 +35,10 @@ class CourseView(UserCourseMixin, ListView):
 
 class CourseCreateView(PermissionRequiredMixin, UserCourseEditMixin, CreateView):
     permission_required = 'courses.add_course'
-    template_name = 'courses/create_course.html'
 
 
 class CourseUpdateView(PermissionRequiredMixin, UserCourseEditMixin, UpdateView):
     permission_required = 'courses.change_course'
-    template_name = 'courses/create_course.html'
 
 
 class CourseDeleteView(PermissionRequiredMixin, UserCourseMixin, DeleteView):
