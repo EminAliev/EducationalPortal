@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -16,7 +17,7 @@ def login_view(request):
                 password=form.cleaned_data["password"])
             if user is not None:
                 login(request, user)
-                return reverse("index")
+                return HttpResponseRedirect('/course/list')
             else:
                 return render(
                     request, "users/signIn.html",
@@ -31,7 +32,7 @@ def login_view(request):
 @login_required(login_url="/auth/signIn")
 def logout_view(request):
     logout(request)
-    return redirect(reverse("signIn"))
+    return HttpResponseRedirect("/auth/signIn")
 
 
 def register(request):

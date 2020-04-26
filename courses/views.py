@@ -34,14 +34,16 @@ class CourseView(UserCourseMixin, ListView):
 
 
 class CourseCreateView(PermissionRequiredMixin, UserCourseEditMixin, CreateView):
-    permission_required = 'courses.change_course'
+    permission_required = 'courses.add_course'
+    template_name = 'courses/create_course.html'
 
 
 class CourseUpdateView(PermissionRequiredMixin, UserCourseEditMixin, UpdateView):
     permission_required = 'courses.change_course'
+    template_name = 'courses/create_course.html'
 
 
 class CourseDeleteView(PermissionRequiredMixin, UserCourseMixin, DeleteView):
-    template_name = ""
+    template_name = "courses/delete_course.html"
     success_url = reverse_lazy('course_list')
     permission_required = 'courses.delete_course'

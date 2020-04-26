@@ -5,7 +5,7 @@
     <div class="module">
         {% for course in object_list %}
             <div class="course-info">
-                <h3>{{ course.title }}</h3>
+                <h3>{{ course.name }}</h3>
                 <p>
                     <a href="{% url "course_edit" course.id %}">Изменить</a>
                     <a href="{% url "course_delete" course.id %}">Удалить</a>
