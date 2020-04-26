@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Курсы{% endblock %}
+{% block content %}
+    <h1>Мои курсы</h1>
+    <div class="module">
+        {% for course in object_list %}
+            <div class="course-info">
+                <h3>{{ course.title }}</h3>
+                <p>
+                    <a href="{% url "course_edit" course.id %}">Изменить</a>
+                    <a href="{% url "course_delete" course.id %}">Удалить</a>
+                </p>
+            </div>
+        {% empty %}
+            <p style="text-align: center">У вас нет созданных курсов</p>
+        {% endfor %}
+        <div class="parent">
+        <p>
+            <a style="display: inline-block; box-sizing: border-box; text-align: center; margin: 0 auto; padding: 1.5rem 3rem; font-size: 1rem; color: white; background: black; font-family: 'Trebuchet MS', Arial, sans-serif; text-transform: uppercase; text-decoration: none" href="{% url "course_create" %}" class="button">Создать курс</a>
+        </p>
+        </div>
+    </div>
+
+
+{% endblock %}

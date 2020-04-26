@@ -1,0 +1,198 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>SchoolSite</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+  <link href="{% static "css/mdb.min.css" %}" rel="stylesheet">
+  <link href="{% static "css/index_style.css" %}" rel="stylesheet">
+</head>
+
+<body>
+
+  
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
+      <div class="container">
+        <a href="#" class="navbar-brand">EP</a>
+
+        <button class="navbar-toggler" type="button" data-toogle="collapse" data-target="#basicExampleNav" aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toogle Navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="basicExampleNav">
+            <ul class="navbar-nav mr-auto smooth-scroll">
+              <li class="nav-item">
+                <a href="#" class="nav-link waves-effect waves-light">Главная</a>
+              </li>
+              <li class="nav-item">
+                <a href="#funtcions" class="nav-link waves-effect waves-light">Курсы</a>
+              </li>
+              <li class="nav-item">
+                <a href="#actual_courses" class="nav-link waves-effect waves-light">Статьи</a>
+              </li>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="basicExampleNav">
+            <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url "register" %}" class="nav-link waves-effect waves-light">Мой профиль</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url "logout" %}" class="nav-link waves-effect waves-light">Выйти</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url "register" %}" class="nav-link waves-effect waves-light">Регистрация</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url "login" %}" class="nav-link waves-effect waves-light">Войти</a>
+                    </li>
+                {% endif %}
+        </div>
+
+      </div>  
+    </nav>
+
+
+    <div id="intro" class="view">
+      <div class="mask rgba-black-strong"> 
+        <div class="container-fluid d-flex align-items-center justify-content-center h-100">
+          <div class="row d-flex justify-content-center text-center">
+            <div class="col-md-20">
+              <h2 class="display-4 font-weight-bold pt-24 mb-2 text-light">
+                Educational Platform
+              </h2>
+              <hr class="hr-light">
+              <div class="white-text my-2">Получите востребованные
+знания бесплатно
+              <br>
+               Онлайн-курсы от ведущих вузов и компаний страны
+</div>
+              </hr>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </header>
+
+
+  <main class="mt-5">
+    <div class="container">
+      <section id="funtcions" class="text-center">
+          <h2 class="mb-5 font-weight-bold">
+            Функции сайта
+          </h2>
+          <div class="row d-flex justify-content-center mb-4">
+            <div class="col-md-8">
+              <p class="grey-text">
+                На сайте имеется:
+              </p>
+            </div>
+          </div> 
+          <div class="row">
+            <div class="col-md-4 mb-5">
+              <i class="fa fa-comment-medical fa-4x grey-text"></i> 
+              <h4 class="my-4 font-weight-bold">Предложения</h4>
+              <p class="grey-text">Возможность оставлять предложения по улучшению школы</p>
+            </div>
+            <div class="col-md-4 mb-5">
+              <i class="fa fa-newspaper fa-4x grey-text"></i>
+              <h4 class="my-4 font-weight-bold">Курсы</h4>
+              <p class="grey-text">Возможность получить новые знания</p>
+            </div>
+            <div class="col-md-4 mb-5">
+              <i class="fa fa-table fa-4x grey-text"></i>
+              <h4 class="my-4 font-weight-bold">Расписание</h4>
+              <p class="grey-text">Возможность посмотреть свое расписание</p>
+            </div>
+          </div>
+      </section>
+      <hr class="my-5">
+      <section id="actual_courses" class="text-center">
+        <h2 class="mb-5 font-weight-bold">
+          Актуальные курсы
+        </h2>
+        <!-- Posts section -->
+        <div class="blog">
+         <div class="container">
+          <div class="row">
+           <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card">
+             <div class="card-img">
+              <img src="https://flammlin.com/wp-content/uploads/2020/01/python-logo.png" class="img-fluid">
+             </div>
+             
+             <div class="card-body">
+             <h4 class="card-title">Программирование на Python</h4>
+              <p class="card-text grey-text">
+               В этом курсе по программированию на языке Python вы познакомитесь с базовыми понятиями программирования. 
+              </p>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card">
+             <div class="card-img">
+              <img src="https://pbs.twimg.com/media/BcWt7p_CAAAu74p.jpg:large" class="img-fluid">
+             </div>
+             <div class="card-body">
+                <h4 class="card-title">Алгоритмы:Теория и практика. Методы </h4>
+              <p class="card-text grey-text">
+               В курсе будут подробно разобраны базовые алгоритмические методы: жадные алгоритмы, метод «разделяй и властвуй», динамическое программирование.
+               Для всех алгоритмов будут математически строго доказаны корректность и оценки на время работы.  
+              </p>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card">
+             <div class="card-img">
+              <img src="https://studfile.net/html/2706/248/html_xUhtOge5z2.4Q2s/htmlconvd-j6UGHi2x1.jpg" class="img-fluid">
+             </div>
+             <div class="card-body">
+             <h4 class="card-title">Дискретная математика</h4>
+              <p class="card-text grey-text">
+               За два месяца, на которые рассчитан курс, слушатели ознакомятся с некоторыми разделами дискретной математики. Это линейная алгебра и комбинаторика.
+              </p>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <big class="font-weight-bold ">Перейти к всем статьям</big>
+        <form>
+          <input type="button" class="btn btn-primary btn-lg" value="Перейти" onClick='location.href="posts.html"'>
+        </form>
+      </section>
+    </div>
+  </main>  
+   <footer class="site-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-sm-6 col-xs-12">
+            <p class="copyright-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright &copy; 2020  
+         <a href="/">Educational Platform</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+</footer>
+
+  
+
+
+  <script type="text/javascript" src="{% static "js/jquery-3.4.1.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/popper.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/mdb.min.js" %}"></script>
+</body>
+
+</html>
