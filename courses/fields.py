@@ -16,7 +16,7 @@ class SortField(models.PositiveIntegerField):
                          for field in self.fields}
                     queryset = queryset.filter(**q)
                 item = queryset.latest(self.attname)
-                value = item.order + 1
+                value = item.sort + 1
             except ObjectDoesNotExist:
                 value = 0
             setattr(model_instance, self.attname, value)
