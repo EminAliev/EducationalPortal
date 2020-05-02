@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateResponseMixin, View
 
 from courses.forms import CourseModuleFormSet
 from courses.models import Course, Module, Content, Subject
+from users.forms import CourseForm
 
 
 class UserMixin(object):
@@ -165,3 +166,9 @@ class CourseListView(TemplateResponseMixin, View):
 class CourseInView(DetailView):
     model = Course
     template_name = 'courses/courses_all_in.html'
+
+
+def get_context_data(self, **kwargs):
+    context = super(CourseInView, self).get_context_data(**kwargs)
+    context['course_form'] = CourseForm(initial={'course': self.object})
+    return context

@@ -16,6 +16,17 @@
                 Преподаватель: {{ course.user.get_full_name }}
             </p>
             {{ object.view|linebreaks }}
+            {% if request.user.is_authenticated %}
+                <form action="{% url "users_entry_course" %}" method="post">
+                    {{ course_form }}
+                    {% csrf_token %}
+                    <input type="submit" class="button" value="Зарегистрироваться на курс">
+                </form>
+            {% else %}
+                <a href="{% url "register" %}" class="button">
+                    Зарегистрируйтесь на сайте
+                </a>
+            {% endif %}
         </div>
     {% endwith %}
 {% endblock %}

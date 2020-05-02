@@ -27,6 +27,7 @@ class Course(models.Model):
     slug = models.SlugField(unique=True, verbose_name='Слаг курса')
     view = models.TextField(verbose_name='Описание курса')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания курса')
+    followers = models.ManyToManyField(User, related_name='courses_joined', blank=True, verbose_name='Учащиеся курса')
 
     class Meta:
         verbose_name = 'Курс'
