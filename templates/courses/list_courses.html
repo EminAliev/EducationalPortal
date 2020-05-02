@@ -10,15 +10,20 @@
                     <a href="{% url "course_edit" course.id %}">Изменить</a>
                     <a href="{% url "course_delete" course.id %}">Удалить</a>
                     <a href="{% url "module_course_update_create" course.id %}">Изменить модули</a>
+                    {% if course.modules.count > 0 %}
+                        <a href="{% url "content_view" course.modules.first.id %}">
+                            Управление содержимым</a>
+                    {% endif %}
                 </p>
             </div>
         {% empty %}
             <p style="text-align: center">У вас нет созданных курсов</p>
         {% endfor %}
         <div class="parent">
-        <p>
-            <a style="display: inline-block; box-sizing: border-box; text-align: center; margin: 0 auto; padding: 1.5rem 3rem; font-size: 1rem; color: white; background: black; font-family: 'Trebuchet MS', Arial, sans-serif; text-transform: uppercase; text-decoration: none" href="{% url "course_create" %}" class="button">Создать курс</a>
-        </p>
+            <p>
+                <a style="display: inline-block; box-sizing: border-box; text-align: center; margin: 0 auto; padding: 1.5rem 3rem; font-size: 1rem; color: white; background: black; font-family: 'Trebuchet MS', Arial, sans-serif; text-transform: uppercase; text-decoration: none"
+                   href="{% url "course_create" %}" class="button">Создать курс</a>
+            </p>
         </div>
     </div>
 

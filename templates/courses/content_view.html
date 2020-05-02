@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load type_content %}
+{% block title %}
+    Модуль {{ module.sort|add:1 }}: {{ module.name }}
+{% endblock %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#modules').sortable({
+            stop: function (event, ui) {
+                modules_sort = {};
+                $('#modules').children().each(function () {
+                    $(this).find('.order').text($(this).index() + 1);
+                    modules_sort[$(this).data('id')] = $(this).index();
+                });
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "sort_modules" %}',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: JSON.stringify(modules_sort)
+                });
+            }
+        });
+
+        $('#module-contents').sortable({
+            stop: function (event, ui) {
+                contents_sort = {};
+                $('#module-contents').children().each(function () {
+                    contents_sort[$(this).data('id')] = $(this).index();
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "sort_content" %}',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: JSON.stringify(contents_sort),
+                });
+            }
+        });
+    });
+</script>
+
+
+{% block content %}
+    {% with course=module.course %}
+        <h1>Курс "{{ course.name }}"</h1>
+        <div class="contents">
+            <h3>Модули</h3>
+            <ul id="modules">
+                {% for m in course.modules.all %}
+                    <li data-id="{{ m.id }}" {% if m == module %}
+                        class="selected"{% endif %}>
+                        <a href="{% url "content_view" m.id %}">
+                        <span>
+                        Модуль <span class="order">{{ m.sor|add:1 }}</span>
+                        </span>
+                            <br>
+                            {{ m.name }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>Модулей нет.</li>
+                {% endfor %}
+            </ul>
+            <p><a href="{% url "module_course_update_create" course.id %}">
+                Изменить модули</a></p>
+        </div>
+        <div class="module_list">
+            <h2>Модуль {{ module.sort|add:1 }}: {{ module.name }}</h2>
+            <h3>Содержимое модулей:</h3>
+            <div id="module-contents">
+                {% for content in module.contents.all %}
+                    <div data-id="{{ content.id }}">
+                        {% with item=content.item %}
+                            <p>{{ item }} ({{ item|model_name }})</p>
+                            <a href="{% url "module_change" module.id item|model_name item.id %}">Изменить</a>
+                            <form action="{% url "module_delete" content.id %}"
+                                  method="post">
+                                <input type="submit" value="Удалить">
+                                {% csrf_token %}
+                            </form>
+                        {% endwith %}
+                    </div>
+                {% empty %}
+                    <p>В этом модуле нет содержимого.</p>
+                {% endfor %}
+            </div>
+            <h3>Добавить содержимое:</h3>
+            <ul class="content-types">
+                <li><a href="{% url "module_create" module.id "text" %}">
+                    Текст</a></li>
+                <li><a href="{% url "module_create" module.id "image" %}">
+                    Изображение</a></li>
+                <li><a href="{% url "module_create" module.id "video" %}">
+                    Видео</a></li>
+                <li><a href="{% url "module_create" module.id "file" %}">
+                    Файл</a></li>
+            </ul>
+        </div>
+    {% endwith %}
+{% endblock %}
+

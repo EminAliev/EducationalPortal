@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
 from .views import CourseView, CourseCreateView, CourseUpdateView, CourseDeleteView, ModuleCourseCreateUpdateView, \
-    ContentCreateView, ContentCancelView
+    ContentCancelView, ContentListView, SortViewForModules, SortViewForContent, CourseListView, \
+    CourseInView, ContentViewCreate
 
 urlpatterns = [
     path('list/',
@@ -19,13 +20,31 @@ urlpatterns = [
     path('<pk>/module/',
          ModuleCourseCreateUpdateView.as_view(),
          name='module_course_update_create'),
-    path('module/<int:module_id>/content/<model_in>/new/',
-         ContentCreateView.as_view(),
+    path('module/<int:module_id>/content/<model_name>/new/',
+         ContentViewCreate.as_view(),
          name='module_create'),
-    path('module/<int:module_id>/content/<model_in>/<id>/',
-         ContentCreateView.as_view(),
+    path('module/<int:module_id>/content/<model_name>/<id>/',
+         ContentViewCreate.as_view(),
          name='module_change'),
     path('content/<int:id>/cancel/',
          ContentCancelView.as_view(),
          name='module_delete'),
+    path('module/<int:module_id>/',
+         ContentListView.as_view(),
+         name='content_view'),
+    path('module/sort/',
+         SortViewForModules.as_view(),
+         name='sort_modules'),
+    path('content/sort/',
+         SortViewForContent.as_view(),
+         name='sort_content'),
+    path('',
+         CourseListView.as_view(),
+         name='courses_all'),
+    path('subject/<slug:subject>)/',
+         CourseListView.as_view(),
+         name='courses_all_subject'),
+    path('<slug:slug>/',
+         CourseInView.as_view(),
+         name='courses_all_in'),
 ]

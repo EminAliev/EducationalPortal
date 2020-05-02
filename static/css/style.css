@@ -281,3 +281,13 @@ body {
     width: 1000px;
     margin-top: 0%;
 }
+
+.module_list {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top:150px
+}
+
