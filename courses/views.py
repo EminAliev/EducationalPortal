@@ -37,7 +37,7 @@ class UserCourseEditMixin(UserCourseMixin, UserEditMixin):
 
 
 class CourseView(UserCourseMixin, ListView):
-    template_name = 'courses/list_courses.html'
+    template_name = 'courses/control/list_courses.html'
 
 
 class CourseCreateView(PermissionRequiredMixin, UserCourseEditMixin, CreateView):
@@ -49,13 +49,13 @@ class CourseUpdateView(PermissionRequiredMixin, UserCourseEditMixin, UpdateView)
 
 
 class CourseDeleteView(PermissionRequiredMixin, UserCourseMixin, DeleteView):
-    template_name = "courses/delete_course.html"
+    template_name = "courses/control/delete_course.html"
     success_url = reverse_lazy('course_list')
     permission_required = 'courses.delete_course'
 
 
 class ModuleCourseCreateUpdateView(TemplateResponseMixin, View):
-    template_name = "courses/update_create_module.html"
+    template_name = "courses/control/update_create_module.html"
     course = None
 
     def get_formset(self, data=None):
@@ -81,7 +81,7 @@ class ContentViewCreate(TemplateResponseMixin, View):
     module = None
     model = None
     obj_item = None
-    template_name = 'courses/module_create_files.html'
+    template_name = 'courses/control/module_create_files.html'
 
     def get_model(self, model_name):
         if model_name in ['text', 'video', 'image', 'file']:
@@ -127,7 +127,7 @@ class ContentCancelView(View):
 
 
 class ContentListView(TemplateResponseMixin, View):
-    template_name = 'courses/content_view.html'
+    template_name = 'courses/control/content_view.html'
 
     def get(self, request, module_id):
         module_object = get_object_or_404(Module, id=module_id, course__user=request.user)
@@ -164,4 +164,4 @@ class CourseListView(TemplateResponseMixin, View):
 
 class CourseInView(DetailView):
     model = Course
-    template_name = 'courses/course/detail.html'
+    template_name = 'courses/courses_all_in.html'
