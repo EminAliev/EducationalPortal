@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}My courses{% endblock %}
+{% block title %}Мои курсы{% endblock %}
 {% block content %}
-    <h1>My courses</h1>
+    <h1>Мои курсы</h1>
     <div class="module">
         {% for course in object_list %}
             <div class="course-info">
                 <h3>{{ course.name }}</h3>
                 <p><a href="{% url "users_course_in" course.id %}">
-                    Access contents</a></p>
+                    Доступные модули</a></p>
             </div>
         {% empty %}
             <p>
-                You are not enrolled in any courses yet.
-                <a href="{% url "courses_all" %}">Browse courses</a>
-                to enroll in a course.
+                Вы не зарегистрировались ни на один курс.
+                <a href="{% url "courses_all" %}">Посмотри курсы</a>
+                и зарегистрируйтесь
             </p>
         {% endfor %}
     </div>
