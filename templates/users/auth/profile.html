@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Мой профиль{% endblock %}
+<link href="{% static "css/profileStyle.css" %}" rel="stylesheet">
+{% block content %}
+
+    <div class="container">
+        <div id="main">
+            <div class="row" id="real-estates-detail">
+                <div class="col-lg-4 col-md-4 col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <header class="panel-title">
+                            </header>
+                        </div>
+                        <div class="panel-body">
+                            <div class="text-center" id="author">
+                                <img style="width: 225px; height: 225px;" src="{{ user.profile.image.url }}">
+                                <h3>{{ user.username }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-8 col-xs-12">
+                    <div class="panel">
+                        <p>О пользователе</p>
+                        <div id="myTabContent" class="tab-content">
+                            <hr>
+                            <table class="table table-th-block">
+                                <tbody>
+                                <tr>
+                                    <td class="active">Имя:</td>
+                                    <td>{{ user.first_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="active">Фамилия:</td>
+                                    <td>{{ user.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="active">Зарегистрирован:</td>
+                                    <td>{{ user.date_joined }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="active">Email:</td>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <form action="{% url 'edit' %} " method="GET">
+                            <input type="submit" value="Редактировать"/>
+                        </form>
+                        <div class="tab-pane fade" id="contact">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

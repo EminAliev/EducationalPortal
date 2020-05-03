@@ -1,14 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, DetailView
 
 from courses.models import Course
-from users.forms import LoginForm, RegisterForm, CourseForm
-from users.models import User
+from users.forms import LoginForm, RegisterForm, CourseForm, ProfileEditForm, UserEditForm
+from users.models import User, Profile
 
 
 def login_view(request):
@@ -23,13 +23,13 @@ def login_view(request):
                 return HttpResponseRedirect('/course')
             else:
                 return render(
-                    request, "users/signIn.html",
+                    request, "users/auth/signIn.html",
                     {"form": form, "errors": ["Incorrect login or password"]})
         else:
-            return render(request, "users/signIn.html", {"form": form})
+            return render(request, "users/auth/signIn.html", {"form": form})
     else:
         form = LoginForm()
-        return render(request, "users/signIn.html", {"form": form})
+        return render(request, "users/auth/signIn.html", {"form": form})
 
 
 @login_required(login_url="/auth/signIn")
@@ -44,16 +44,44 @@ def register(request):
         form = RegisterForm(request.POST)
 
         if form.is_valid():
-            User.objects.create_user(
+            new_user = User.objects.create_user(
                 form.cleaned_data["username"],
                 email=form.cleaned_data["email"],
                 password=form.cleaned_data["password"])
-
+            Profile.objects.create(user=new_user)
             return redirect(reverse("login"))
         else:
-            return render(request, "users/signUp.html", {"form": form})
+            return render(request, "users/auth/signUp.html", {"form": form})
     else:
-        return render(request, "users/signUp.html", {"form": RegisterForm()})
+        return render(request, "users/auth/signUp.html", {"form": RegisterForm()})
+
+
+class ProfileView(LoginRequiredMixin, DetailView):
+    model = Profile
+    context_object_name = 'profile'
+    template_name = 'users/auth/profile.html'
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(Profile, user=self.request.user)
+        if obj.user != self.request.user:
+            raise Http404
+        return obj
+
+
+@login_required
+def edit(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+        return redirect('profile')
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+    return render(request, 'users/auth/edit.html',
+                  {'user_form': user_form, 'profile_form': profile_form})
 
 
 class UserEntryToCourseView(LoginRequiredMixin, FormView):

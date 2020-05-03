@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Мой профиль{% endblock %}
+{% block content %}
+    <h1>Изменить профиль</h1>
+    <div class="profile_center">
+        <form action="." method="post" enctype="multipart/form-data">
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Сохранить"></p>
+        </form>
+    </div>
+{% endblock %}

@@ -290,4 +290,11 @@ body {
     margin-top: 0%;
     top:150px
 }
-
+.profile_center {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top:150px
+}

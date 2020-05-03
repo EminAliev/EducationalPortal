@@ -1,7 +1,7 @@
 from django import forms
 
 from courses.models import Course
-from users.models import User
+from users.models import User, Profile
 
 
 class LoginForm(forms.Form):
@@ -15,6 +15,18 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         fields = {"username", "email", "password"}
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('image',)
+
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
 
 
 class CourseForm(forms.Form):
