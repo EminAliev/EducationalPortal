@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from courses.models import Course, Module, Subject
+from courses.models import Course, Module, Subject, Content
 
 
 class ModuleInline(admin.StackedInline):
@@ -20,3 +20,6 @@ class CourseAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)}
+
+
+admin.site.register(Content)

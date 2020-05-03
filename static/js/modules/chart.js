@@ -10097,7 +10097,7 @@ var helpers = {
 	},
 
 	/**
-	 * Applies the contents of two or more objects together into the first object.
+	 * Applies the content of two or more objects together into the first object.
 	 * @param {Object} target - The target object in which all objects are merged into.
 	 * @param {Object} arg1 - Object containing additional properties to merge in target.
 	 * @param {Object} argN - Additional objects containing properties to merge in target.

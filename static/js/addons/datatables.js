@@ -646,7 +646,7 @@
 		
 		/**
 		 * This function will place a new row directly after a row which is currently
-		 * on display on the page, with the HTML contents that is passed into the
+		 * on display on the page, with the HTML content that is passed into the
 		 * function. This can be used, for example, to ask for confirmation that a
 		 * particular record should be deleted.
 		 *  @param {node} nTr The table row to 'open'
@@ -2962,7 +2962,7 @@
 	
 	
 	/**
-	 * Build a data source object from an HTML row, reading the contents of the
+	 * Build a data source object from an HTML row, reading the content of the
 	 * cells that are in the row.
 	 *
 	 * @param {object} settings DataTables settings object
@@ -6853,7 +6853,7 @@
 	 *
 	 * Additionally the API is designed to allow you to easily work with the data in
 	 * the tables, retrieving and manipulating it as required. This is done by
-	 * presenting the API class as an array like interface. The contents of the
+	 * presenting the API class as an array like interface. The content of the
 	 * array depend upon the actions requested by each method (for example
 	 * `rows().nodes()` will return an array of nodes, while `rows().data()` will
 	 * return an array of objects or arrays depending upon your table's
@@ -14143,7 +14143,7 @@
 		 * order a column, but is necessarily therefore more complex.
 		 * 
 		 * This type of ordering is useful if you want to do ordering based on data
-		 * live from the DOM (for example the contents of an 'input' element) rather
+		 * live from the DOM (for example the content of an 'input' element) rather
 		 * than just the static string that DataTables knows of.
 		 * 
 		 * The way these plug-ins work is that you create an array of the values you

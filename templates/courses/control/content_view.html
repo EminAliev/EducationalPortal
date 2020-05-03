@@ -70,7 +70,7 @@
             <h2>Модуль {{ module.sort|add:1 }}: {{ module.name }}</h2>
             <h3>Содержимое модулей:</h3>
             <div id="module-contents">
-                {% for content in module.contents.all %}
+                {% for content in module.content.all %}
                     <div data-id="{{ content.id }}">
                         {% with item=content.item %}
                             <p>{{ item }} ({{ item|model_name }})</p>
@@ -100,4 +100,3 @@
         </div>
     {% endwith %}
 {% endblock %}
-

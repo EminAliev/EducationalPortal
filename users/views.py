@@ -20,7 +20,7 @@ def login_view(request):
                 password=form.cleaned_data["password"])
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect('/course/list')
+                return HttpResponseRedirect('/course')
             else:
                 return render(
                     request, "users/signIn.html",
@@ -66,7 +66,7 @@ class UserEntryToCourseView(LoginRequiredMixin, FormView):
         return super(UserEntryToCourseView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('users_entry_course', args=[self.course.id])
+        return reverse_lazy('users_course_in', args=[self.course.id])
 
 
 class UserCourseView(LoginRequiredMixin, ListView):

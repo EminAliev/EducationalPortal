@@ -20,9 +20,9 @@
             {% endfor %}
         </ul>
     </div>
-    <div class="module">
-        {% for content in module.contents.all %}
-            {% with item=content.item %}
+    <div class="module_list">
+        {% for c in module.content.all %}
+            {% with item=c.item %}
                 <h2>{{ item.name }}</h2>
                 {{ item.render }}
             {% endwith %}

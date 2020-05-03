@@ -34,7 +34,7 @@ class UserCourseMixin(UserMixin, LoginRequiredMixin):
 class UserCourseEditMixin(UserCourseMixin, UserEditMixin):
     fields = ['subject', 'name', 'slug', 'view']
     success_url = reverse_lazy('course_list')
-    template_name = 'courses/create_course.html'
+    template_name = 'courses/control/create_course.html'
 
 
 class CourseView(UserCourseMixin, ListView):
@@ -113,7 +113,6 @@ class ContentViewCreate(TemplateResponseMixin, View):
             if not id:
                 Content.objects.create(module=self.module, item=obj_item)
             return redirect('content_view', self.module.id)
-
         return self.render_to_response({'form': form, 'object': self.obj_item})
 
 
@@ -167,8 +166,7 @@ class CourseInView(DetailView):
     model = Course
     template_name = 'courses/courses_all_in.html'
 
-
-def get_context_data(self, **kwargs):
-    context = super(CourseInView, self).get_context_data(**kwargs)
-    context['course_form'] = CourseForm(initial={'course': self.object})
-    return context
+    def get_context_data(self, **kwargs):
+        context = super(CourseInView, self).get_context_data(**kwargs)
+        context['course_form'] = CourseForm(initial={'course': self.object})
+        return context

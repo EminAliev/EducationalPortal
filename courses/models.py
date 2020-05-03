@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.template.loader import render_to_string
 
 from courses.fields import SortField
 from users.models import User
@@ -54,7 +55,7 @@ class Module(models.Model):
 
 
 class Content(models.Model):
-    module = models.ForeignKey(Module, related_name='contents', on_delete=models.CASCADE,
+    module = models.ForeignKey(Module, related_name='content', on_delete=models.CASCADE,
                                verbose_name="Содержимое модуля")
     type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to={'model__in': (
         'text',
@@ -90,6 +91,9 @@ class AbstractItem(models.Model):
 
     def __str__(self):
         return self.name
+
+    def render(self):
+        return render_to_string('courses/content/{}.html'.format(self._meta.model_name), {'item': self})
 
 
 class Text(AbstractItem):
