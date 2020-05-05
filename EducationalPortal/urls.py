@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('users.urls')),
     path('course/', include('courses.urls')),
+    path('test/', include('tasks.urls')),
     path('', TemplateView.as_view(template_name="index.html"), name='index'),
 ]
 if settings.DEBUG:

@@ -13,8 +13,13 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    image = models.ImageField(default='default.jpg', upload_to='profile', verbose_name='Изображение')
+    completed_courses = models.ManyToManyField(
+        "courses.Course",
+        blank=True,
+        verbose_name='Пройденные курсы'
+    )
 
     def __str__(self):
         return f'{self.user.username} Profile'

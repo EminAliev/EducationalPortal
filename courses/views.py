@@ -1,15 +1,19 @@
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
+from django.contrib import messages
 from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.forms import modelform_factory
-from django.shortcuts import get_object_or_404, redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.base import TemplateResponseMixin, View
 
-from courses.forms import CourseModuleFormSet
-from courses.models import Course, Module, Content, Subject
+from EducationalPortal import settings
+from courses.forms import CourseModuleFormSet, AnswerForm
+from courses.models import Course, Module, Content, Subject, Task, MessagesTask, TaskRealization
 from users.forms import CourseForm
 
 
@@ -170,3 +174,61 @@ class CourseInView(DetailView):
         context = super(CourseInView, self).get_context_data(**kwargs)
         context['course_form'] = CourseForm(initial={'course': self.object})
         return context
+
+
+class TaskCourse(View):
+
+    def get(self, request, pk):
+        task = get_object_or_404(Task, id=pk, active=True)
+        if self.check_user(request, pk) is False:
+            raise Http404
+        if request.user not in task.course.followers.all():
+            raise Http404
+        answer = self.get_realization_task(task, request.user)
+        return render(request, "courses/task-course.html",
+                      {"task": task, "answer": answer, "course": task.course, "form": AnswerForm()})
+
+    @staticmethod
+    def get_realization_task(task, user):
+        """Получение ответа на задание"""
+        try:
+            return MessagesTask.objects.filter(task_realization=TaskRealization.objects.get(task=task,
+                                                                                       student=user))
+        except ObjectDoesNotExist:
+            return {}
+
+    @staticmethod
+    def check_user(request, task_id):
+        """
+        Проверка юзера на жульничество,
+        выполнение недоступных заданий
+        """
+        try:
+            course = Task.objects.get(id=task_id).course
+        except ObjectDoesNotExist:
+            return False
+
+    def post(self, request, pk):
+        """Выполнение задания/изменение ответа"""
+        # task_id = request.data.get('task')
+
+        if self.check_user(request, pk) is False:
+            messages.add_message(self.request, settings.TASK_MESS, 'Не жульничай')
+            return HttpResponseRedirect(request.path)
+
+        try:
+            answer = TaskRealization.objects.get(task_id=pk, student=request.user)
+        except:
+            answer = TaskRealization.objects.create(task_id=pk, student=request.user)
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.task_realization = answer
+            form.user = request.user
+            form.save()
+            messages.add_message(self.request, settings.TASK_MESS, 'Ответ отправлен')
+        else:
+            messages.add_message(self.request, settings.TASK_MESS, 'Ошибка сохранения')
+        return HttpResponseRedirect(request.path)
+
+# короче надо доабвить celery

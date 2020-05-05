@@ -288,13 +288,50 @@ body {
     position: absolute;
     width: 1000px;
     margin-top: 0%;
-    top:150px
+    top: 150px
 }
+
 .profile_center {
     left: 50%;
     margin-left: -150px;
     position: absolute;
     width: 1000px;
     margin-top: 0%;
-    top:150px
+    top: 150px
+}
+
+.task {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 150px
+}
+
+.task_answer {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 400px
+}
+
+.task_description {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 100px
+}
+
+.row_task {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 850px
 }

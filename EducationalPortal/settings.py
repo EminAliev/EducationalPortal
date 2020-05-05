@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'courses',
     'users',
     'embed_video',
+    'tasks',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +116,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+TASK_MESS = 82
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
