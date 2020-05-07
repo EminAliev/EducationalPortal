@@ -1,7 +1,7 @@
 from django.db import models
 
 from courses.models import Course
-from users.models import User
+from users.models import User, Student
 
 
 class Test(models.Model):
@@ -31,15 +31,6 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.answer
-
-
-class Student(models.Model):
-    """Класс модели студента"""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    test = models.ManyToManyField(Test)
-
-    def __str__(self):
-        return self.user.username
 
 
 class CompleteTest(models.Model):

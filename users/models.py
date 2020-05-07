@@ -1,9 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from tasks.models import Test
+
 
 class User(AbstractUser):
     """Класс модели пользователя"""
+
+    student = models.BooleanField(default=False, verbose_name='Студент?')
+    teacher = models.BooleanField(default=False, verbose_name='Преподаватель?')
 
     class Meta:
         db_table = 'user'
@@ -12,6 +17,15 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username + ' ' + str(self.date_joined)
+
+
+class Student(models.Model):
+    """Класс модели студента"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    test = models.ManyToManyField(Test)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Profile(models.Model):
