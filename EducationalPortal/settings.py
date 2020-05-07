@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'embed_video',
     'tasks',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,13 @@ USE_L10N = True
 USE_TZ = True
 
 TASK_MESS = 82
+
+REST_FRAMEWORK = {
+    # отвечает за разрешения по умолчанию для доступа к чтению, созданию, изменению и удалению объектов
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

@@ -18,6 +18,9 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from .yasg import urlpatterns as doc_urls
+
+from api.courses.views import SubjectView, SubjectInView, EntryToCourseView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +28,14 @@ urlpatterns = [
     path('course/', include('courses.urls')),
     path('test/', include('tasks.urls')),
     path('', TemplateView.as_view(template_name="index.html"), name='index'),
+
+    # REST API
+    path('api/subjects/', SubjectView.as_view(), name='subjects_all'),
+    path('api/subjects/<pk>/', SubjectInView.as_view(), name='subject_in'),
+    path('api/courses/<pk>/entry/', EntryToCourseView.as_view(), name='entry'),
 ]
+
+urlpatterns += doc_urls
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
