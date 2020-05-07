@@ -1,103 +1,56 @@
 from django.db import models
 
+from courses.models import Course
 from users.models import User
 
 
-class TestSubject(models.Model):
-    """Модель тестов по предмету"""
-    name = models.CharField('Название', max_length=200)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Тест предмета'
-        verbose_name_plural = 'Тесты предмета'
-
-
 class Test(models.Model):
-    """Модель тестов"""
-    test_subject = models.ForeignKey(TestSubject, on_delete=models.SET_NULL,
-                                     related_name='tests',
-                                     verbose_name='Тест предмета',
-                                     null=True,
-                                     blank=True)
-
-    name = models.CharField('Название', max_length=200)
-    active = models.BooleanField('Активный', default=1)
-    for_course = models.BooleanField('Для курса', default=0)
+    """Класс модели тестов"""
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='test')
+    name = models.CharField(max_length=255)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='test')
 
     def __str__(self):
         return self.name
-
-    class Meta:
-        verbose_name = 'Тест'
-        verbose_name_plural = 'Тесты'
 
 
 class Question(models.Model):
-    """Модель вопросов"""
-    test = models.ForeignKey(
-        Test,
-        on_delete=models.CASCADE,
-        related_name='questions',
-        verbose_name='Тест'
-    )
+    """Класс модели вопрос"""
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
     question = models.TextField('Вопрос')
-    description = models.TextField("Описание вопроса", default="")
 
     def __str__(self):
-        return '{} - {}'.format(self.test, self.question)
-
-    class Meta:
-        verbose_name = 'Вопрос'
-        verbose_name_plural = 'Вопросы'
+        return self.question
 
 
 class Answer(models.Model):
-    """Модель ответов"""
-    question = models.ForeignKey(
-        Question,
-        on_delete=models.CASCADE,
-        related_name='answers',
-        verbose_name='Вопрос'
-    )
-    answer = models.TextField('Вариант')
-    right = models.BooleanField('Является верным ответом', default=False)
+    """Класс модели ответов"""
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    answer = models.TextField('Ответ')
+    correct_answer = models.BooleanField('Правильный ответ', default=False)
 
     def __str__(self):
         return self.answer
 
-    class Meta:
-        verbose_name = 'Вариант ответа'
-        verbose_name_plural = 'Варианты ответа'
 
-
-class CounterAnswer(models.Model):
-    """Модель счётчика правильных ответов"""
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='answers_counter',
-        verbose_name='Пользователь'
-    )
-    test = models.ForeignKey(
-        Test,
-        on_delete=models.CASCADE,
-        related_name='counter',
-        verbose_name='Тест'
-    )
-
-    count_question = models.PositiveIntegerField(default=0, editable=False)
-    counter = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        verbose_name = "Ответ на тест"
-        verbose_name_plural = "Ответы на тесты"
-
-    def save(self, *args, **kwargs):
-        self.questions_count = self.test.questions.all().count()
-        super().save(*args, **kwargs)
+class Student(models.Model):
+    """Класс модели студента"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    test = models.ManyToManyField(Test)
 
     def __str__(self):
-        return "{} - {}".format(self.user, self.test)
+        return self.user.username
+
+
+class CompleteTest(models.Model):
+    """Класс модели выполенный тест"""
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='complete_test')
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='complete_test')
+    result = models.FloatField()
+    date_created = models.DateTimeField(auto_now_add=True)
+
+
+class StudentAnswerTest(models.Model):
+    """Класс модели ответа студента"""
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='test_answers')
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer')
