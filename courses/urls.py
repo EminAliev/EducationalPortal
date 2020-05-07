@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from .views import CourseView, CourseCreateView, CourseUpdateView, CourseDeleteView, ModuleCourseCreateUpdateView, \
-    ContentCancelView, ContentListView, SortViewForModules, SortViewForContent, CourseListView, \
+    ContentCancelView, ContentListView, CourseListView, \
     CourseInView, ContentViewCreate, TaskCourse
 
 urlpatterns = [
@@ -32,12 +32,6 @@ urlpatterns = [
     path('module/<int:module_id>/',
          ContentListView.as_view(),
          name='content_view'),
-    path('module/sort/',
-         SortViewForModules.as_view(),
-         name='sort_modules'),
-    path('content/sort/',
-         SortViewForContent.as_view(),
-         name='sort_content'),
     path('',
          CourseListView.as_view(),
          name='courses_all'),

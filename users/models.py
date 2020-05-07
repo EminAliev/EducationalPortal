@@ -3,6 +3,8 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """Класс модели пользователя"""
+
     class Meta:
         db_table = 'user'
         verbose_name = 'Пользователь'
@@ -13,6 +15,7 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
+    """Класс модели профиля"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     image = models.ImageField(default='default.jpg', upload_to='profile', verbose_name='Изображение')
     completed_courses = models.ManyToManyField(

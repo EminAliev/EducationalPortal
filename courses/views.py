@@ -18,12 +18,16 @@ from users.forms import CourseForm
 
 
 class UserMixin(object):
+    """Получение объектов, владельцом которого является текущей пользователь"""
+
     def get_queryset(self):
         queryset = super(UserMixin, self).get_queryset()
         return queryset.filter(user=self.request.user)
 
 
 class UserEditMixin(object):
+    """Валидация формы и сохранение объекта в БД"""
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(UserEditMixin, self).form_valid(form)
@@ -42,24 +46,29 @@ class UserCourseEditMixin(UserCourseMixin, UserEditMixin):
 
 
 class CourseView(UserCourseMixin, ListView):
+    """Список всех курсов"""
     template_name = 'courses/control/list_courses.html'
 
 
 class CourseCreateView(PermissionRequiredMixin, UserCourseEditMixin, CreateView):
+    """Создание нового курса"""
     permission_required = 'courses.add_course'
 
 
 class CourseUpdateView(PermissionRequiredMixin, UserCourseEditMixin, UpdateView):
+    """Изменение курса"""
     permission_required = 'courses.change_course'
 
 
 class CourseDeleteView(PermissionRequiredMixin, UserCourseMixin, DeleteView):
+    """Удаление курса"""
     template_name = "courses/control/delete_course.html"
     success_url = reverse_lazy('course_list')
     permission_required = 'courses.delete_course'
 
 
 class ModuleCourseCreateUpdateView(TemplateResponseMixin, View):
+    """Обрабатывает действия с формами по созданию, изменениб и удалению модулей для конкретного курса"""
     template_name = "courses/control/update_create_module.html"
     course = None
 
@@ -83,6 +92,7 @@ class ModuleCourseCreateUpdateView(TemplateResponseMixin, View):
 
 
 class ContentViewCreate(TemplateResponseMixin, View):
+    """Создание и изменение контента(содержиомого) различных типов"""
     module = None
     model = None
     obj_item = None
@@ -121,6 +131,7 @@ class ContentViewCreate(TemplateResponseMixin, View):
 
 
 class ContentCancelView(View):
+    """Удаление контента(содержимого) модулей"""
 
     def post(self, request, id):
         content_object = get_object_or_404(Content, id=id, module__course__user=request.user)
@@ -131,6 +142,7 @@ class ContentCancelView(View):
 
 
 class ContentListView(TemplateResponseMixin, View):
+    """Список всех модулей и их контента(содержимого)"""
     template_name = 'courses/control/content_view.html'
 
     def get(self, request, module_id):
@@ -138,7 +150,7 @@ class ContentListView(TemplateResponseMixin, View):
         return self.render_to_response({'module': module_object})
 
 
-class SortViewForModules(CsrfExemptMixin, JsonRequestResponseMixin, View):
+"""class SortViewForModules(CsrfExemptMixin, JsonRequestResponseMixin, View):
     def post(self, request):
         for id, sort in self.request_json.items():
             Module.objects.filter(id=id, course__user=request.user).update(sort=sort)
@@ -146,13 +158,15 @@ class SortViewForModules(CsrfExemptMixin, JsonRequestResponseMixin, View):
 
 
 class SortViewForContent(CsrfExemptMixin, JsonRequestResponseMixin, View):
+
     def post(self, request):
         for id, sort in self.request_json.items():
             Content.objects.filter(id=id, module__course__user=request.user).update(sort=sort)
-        return self.render_json_response({'saved': 'OK'})
+        return self.render_json_response({'saved': 'OK'})"""
 
 
 class CourseListView(TemplateResponseMixin, View):
+    """Список курсов с возможностью фильтрации"""
     model = Course
     template_name = 'courses/courses_all.html'
 
@@ -167,6 +181,7 @@ class CourseListView(TemplateResponseMixin, View):
 
 
 class CourseInView(DetailView):
+    """Подробное описания курса"""
     model = Course
     template_name = 'courses/courses_all_in.html'
 
@@ -177,6 +192,7 @@ class CourseInView(DetailView):
 
 
 class TaskCourse(View):
+    """Задания для курса"""
 
     def get(self, request, pk):
         task = get_object_or_404(Task, id=pk, active=True)
@@ -193,25 +209,20 @@ class TaskCourse(View):
         """Получение ответа на задание"""
         try:
             return MessagesTask.objects.filter(task_realization=TaskRealization.objects.get(task=task,
-                                                                                       student=user))
+                                                                                            student=user))
         except ObjectDoesNotExist:
             return {}
 
     @staticmethod
     def check_user(request, task_id):
-        """
-        Проверка юзера на жульничество,
-        выполнение недоступных заданий
-        """
+        """Проверка на выполнение недоступных заданий"""
         try:
             course = Task.objects.get(id=task_id).course
         except ObjectDoesNotExist:
             return False
 
     def post(self, request, pk):
-        """Выполнение задания/изменение ответа"""
-        # task_id = request.data.get('task')
-
+        """Выполнение задания или изменение ответа"""
         if self.check_user(request, pk) is False:
             messages.add_message(self.request, settings.TASK_MESS, 'Не жульничай')
             return HttpResponseRedirect(request.path)
@@ -230,5 +241,3 @@ class TaskCourse(View):
         else:
             messages.add_message(self.request, settings.TASK_MESS, 'Ошибка сохранения')
         return HttpResponseRedirect(request.path)
-
-# короче надо доабвить celery

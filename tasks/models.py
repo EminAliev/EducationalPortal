@@ -4,6 +4,7 @@ from users.models import User
 
 
 class TestSubject(models.Model):
+    """Модель тестов по предмету"""
     name = models.CharField('Название', max_length=200)
 
     def __str__(self):
@@ -15,6 +16,7 @@ class TestSubject(models.Model):
 
 
 class Test(models.Model):
+    """Модель тестов"""
     test_subject = models.ForeignKey(TestSubject, on_delete=models.SET_NULL,
                                      related_name='tests',
                                      verbose_name='Тест предмета',
@@ -34,6 +36,7 @@ class Test(models.Model):
 
 
 class Question(models.Model):
+    """Модель вопросов"""
     test = models.ForeignKey(
         Test,
         on_delete=models.CASCADE,
@@ -52,6 +55,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
+    """Модель ответов"""
     question = models.ForeignKey(
         Question,
         on_delete=models.CASCADE,
@@ -70,6 +74,7 @@ class Answer(models.Model):
 
 
 class CounterAnswer(models.Model):
+    """Модель счётчика правильных ответов"""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

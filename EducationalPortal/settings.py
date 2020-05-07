@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'embed_video',
     'rest_framework',
     'tasks',
-    'drf_yasg'
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +125,10 @@ REST_FRAMEWORK = {
     # отвечает за разрешения по умолчанию для доступа к чтению, созданию, изменению и удалению объектов
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ]
 }
 

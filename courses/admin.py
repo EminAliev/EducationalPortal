@@ -5,6 +5,7 @@ from courses.models import Course, Module, Subject, Content, Task, MessagesTask,
 
 
 def all_fields_admin(cls, *exclude_fields):
+    """Забирает все поля для list_display"""
     return [field.name for field in cls._meta.fields if field.name not in exclude_fields]
 
 
@@ -14,6 +15,7 @@ class ModuleInline(admin.StackedInline):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
+    """Админка курсов"""
     list_display = ['name', 'subject', 'date_created']
     search_fields = ['name', 'view']
     list_filter = ['date_created', 'subject']
@@ -23,6 +25,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
+    """Админка предметов"""
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)}
 
@@ -43,10 +46,7 @@ class RealizationTaskAdmin(admin.ModelAdmin):
     """Админка выполнения заданий"""
 
     class MessagesTaskAdmin(admin.TabularInline):
-        """
-        Возможность добавления вопросов
-        сразу при создании теста
-        """
+        """Добавления вопросов при создании теста"""
         model = MessagesTask
 
     inlines = [
@@ -64,7 +64,7 @@ class RealizationTaskAdmin(admin.ModelAdmin):
 
 
 class MessagesTaskAdmin(admin.ModelAdmin):
-    """Сообщения в задании"""
+    """Админка для комментариев в задании"""
     list_display = ("user", "task_realization", "date_created")
 
 

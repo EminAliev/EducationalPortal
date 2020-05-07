@@ -12,6 +12,7 @@ from users.models import User, Profile
 
 
 def login_view(request):
+    """Авторизация пользователя"""
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -34,11 +35,13 @@ def login_view(request):
 
 @login_required(login_url="/auth/signIn")
 def logout_view(request):
+    """Выход из системы"""
     logout(request)
     return HttpResponseRedirect("/auth/signIn")
 
 
 def register(request):
+    """Регистрация нового пользователя"""
     if request.method == "POST":
 
         form = RegisterForm(request.POST)
@@ -57,6 +60,7 @@ def register(request):
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
+    """Просмотр профиль пользователя"""
     model = Profile
     context_object_name = 'profile'
     template_name = 'users/auth/profile.html'
@@ -70,6 +74,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
 
 @login_required
 def edit(request):
+    """Изменение данных в профиле"""
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
@@ -85,6 +90,7 @@ def edit(request):
 
 
 class UserEntryToCourseView(LoginRequiredMixin, FormView):
+    """Запись на курс"""
     course = None
     form_class = CourseForm
 
@@ -98,6 +104,7 @@ class UserEntryToCourseView(LoginRequiredMixin, FormView):
 
 
 class UserCourseView(LoginRequiredMixin, ListView):
+    """Просмотр курсов текущего пользователя"""
     model = Course
     template_name = 'users/list_courses.html'
 
@@ -107,6 +114,7 @@ class UserCourseView(LoginRequiredMixin, ListView):
 
 
 class UserCourseInView(DetailView):
+    """Просмотр детального описания курса текущего пользователя"""
     model = Course
     template_name = 'users/course_in.html'
 
@@ -118,7 +126,9 @@ class UserCourseInView(DetailView):
         context = super(UserCourseInView, self).get_context_data(**kwargs)
         course = self.get_object()
         if 'module_id' in self.kwargs:
+            # Получаем текущий модуль
             context['module'] = course.modules.get(id=self.kwargs['module_id'])
         else:
+            # Получаем первый модуль
             context['module'] = course.modules.all()[0]
         return context

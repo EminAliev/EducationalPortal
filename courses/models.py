@@ -11,6 +11,7 @@ from users.models import User
 
 
 class Subject(models.Model):
+    """Класс модели предмета"""
     name = models.CharField(max_length=250, verbose_name='Название предмета')
     slug = models.SlugField(unique=True, verbose_name='Слаг предмета')
 
@@ -24,6 +25,7 @@ class Subject(models.Model):
 
 
 class Course(models.Model):
+    """Класс модели курса"""
     user = models.ForeignKey(User, related_name='courses_created', on_delete=models.CASCADE,
                              verbose_name='Пользователь')
     subject = models.ForeignKey(Subject, related_name="courses", on_delete=models.CASCADE, verbose_name='Предмет курса')
@@ -46,6 +48,7 @@ class Course(models.Model):
 
 
 class Module(models.Model):
+    """Класс модели модуль"""
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE, verbose_name='Курс модуля')
     name = models.CharField(max_length=250, verbose_name='Название модуля')
     definition = models.TextField(blank=True, verbose_name='Описание модуля')
@@ -61,6 +64,7 @@ class Module(models.Model):
 
 
 class Content(models.Model):
+    """Класс модели контента(содержимого в модулях)"""
     module = models.ForeignKey(Module, related_name='content', on_delete=models.CASCADE,
                                verbose_name="Содержимое модуля")
     type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to={'model__in': (
@@ -75,9 +79,11 @@ class Content(models.Model):
     class Meta:
         ordering = ['sort']
         verbose_name = 'Контент'
+        verbose_name_plural = 'Контенты'
 
 
 class AbstractContent(models.Model):
+    """Абстрактный класс модели контента"""
     name = models.CharField(max_length=150)
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -86,6 +92,7 @@ class AbstractContent(models.Model):
 
 
 class AbstractItem(models.Model):
+    """Абстрактный класс модели видов контента(содержимого)"""
     user = models.ForeignKey(User, related_name='%(class)s_related', on_delete=models.CASCADE,
                              verbose_name="Пользователь")
     name = models.CharField(max_length=300, verbose_name="Название")
@@ -103,6 +110,7 @@ class AbstractItem(models.Model):
 
 
 class Text(AbstractItem):
+    """Класс модели текста"""
     text = models.TextField(verbose_name="Текст")
 
     class Meta:
@@ -110,6 +118,7 @@ class Text(AbstractItem):
 
 
 class File(AbstractItem):
+    """Класс модели файла"""
     file = models.FileField(upload_to='files', verbose_name="Файл")
 
     class Meta:
@@ -117,6 +126,7 @@ class File(AbstractItem):
 
 
 class Image(AbstractItem):
+    """Класс модели изображения"""
     image = models.FileField(upload_to='images', verbose_name="Изображение")
 
     class Meta:
@@ -124,6 +134,7 @@ class Image(AbstractItem):
 
 
 class Video(AbstractItem):
+    """Класс модели видео"""
     path = models.URLField(verbose_name="Ссылка")
 
     class Meta:
@@ -131,6 +142,7 @@ class Video(AbstractItem):
 
 
 class Task(models.Model):
+    """Класс модели задания"""
     course = models.ForeignKey(Course, verbose_name='Курс', related_name='tasks', on_delete=models.CASCADE)
     name = models.CharField('Название задания', max_length=50)
     description = models.TextField('Описание задания')
@@ -165,6 +177,7 @@ def minus_count_tasks(instance, **kwargs):
 
 
 class TaskRealization(models.Model):
+    """Класс модели выполнения задания"""
     task = models.ForeignKey(Task, verbose_name='Задание', on_delete=models.CASCADE, related_name='answers')
     student = models.ForeignKey(User, verbose_name='Ученик', on_delete=models.CASCADE)
     answer = models.TextField('Ответ')
@@ -176,12 +189,14 @@ class TaskRealization(models.Model):
         return self.task.name
 
     def add_complete(self):
+        """Выполнение задание"""
         realizations_count = TaskRealization.objects.filter(student=self.student).count()
         tasks_count = self.task.course.counter_tasks
         if realizations_count == tasks_count:
             self.student.profile.completed_courses.add(self.task.course)
 
     def save(self, *args, **kwargs):
+        """Сохранение в БД выполнения задания"""
         self.add_complete()
         super().save(*args, **kwargs)
 
@@ -191,6 +206,7 @@ class TaskRealization(models.Model):
 
 
 class MessagesTask(models.Model):
+    """Класс модели комментария преподавателя к выполненному заданию ученика"""
     task_realization = models.ForeignKey(TaskRealization, verbose_name='Выполнение', on_delete=models.CASCADE,
                                          related_name='realization_task')
     user = models.ForeignKey(User, verbose_name='Ученик', on_delete=models.CASCADE)

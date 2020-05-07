@@ -5,10 +5,13 @@ from tasks.models import Question, Answer, Test, CounterAnswer, TestSubject
 
 
 def all_fields_admin(cls, *exclude_fields):
+    """Забирает все поля для list_display"""
     return [field.name for field in cls._meta.fields if field.name not in exclude_fields]
 
 
 class AdminQuestionForm(forms.ModelForm):
+    """Форма для админки вопросов,"""
+
     class Meta:
         model = Question
         fields = '__all__'
@@ -29,16 +32,13 @@ class AdminQuestionForm(forms.ModelForm):
 class AdminQuestion(admin.ModelAdmin):
     """Админка вопросов"""
 
-    class PossibleAnswerInline(admin.TabularInline):
-        """
-        Возможность добавления вариантов ответа
-        сразу при создании вопроса
-        """
+    class AnswerInline(admin.TabularInline):
+        """Добавления вариантов ответа при создании вопроса"""
         model = Answer
 
     form = AdminQuestionForm
     inlines = [
-        PossibleAnswerInline,
+        AnswerInline,
     ]
     list_display = ("id", "question", "test")
     list_display_links = ("question",)
@@ -48,10 +48,7 @@ class AdminTest(admin.ModelAdmin):
     """Админка тестов"""
 
     class QuestionInline(admin.TabularInline):
-        """
-        Возможность добавления вопросов
-        сразу при создании теста
-        """
+        """Добавление вопросов при создании теста"""
         model = Question
 
     list_display = all_fields_admin(Test)
@@ -60,18 +57,18 @@ class AdminTest(admin.ModelAdmin):
     ]
 
 
-class AdminPossibleAnswer(admin.ModelAdmin):
+class AdminAnswer(admin.ModelAdmin):
     """Админка вариантов ответа"""
     list_display = all_fields_admin(Answer)
 
 
 class AnswersCounterAdmin(admin.ModelAdmin):
-    """Ответы на тесты"""
+    """Админка ответов на тесты"""
     list_display = all_fields_admin(CounterAnswer)
 
 
 admin.site.register(TestSubject)
 admin.site.register(Test, AdminTest)
 admin.site.register(Question, AdminQuestion)
-admin.site.register(Answer, AdminPossibleAnswer)
+admin.site.register(Answer, AdminAnswer)
 admin.site.register(CounterAnswer, AnswersCounterAdmin)
