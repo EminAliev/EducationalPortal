@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'courses',
     'users',
     'embed_video',
+    'rest_framework',
     'tasks',
     'drf_yasg'
 ]
