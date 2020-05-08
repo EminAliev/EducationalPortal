@@ -92,7 +92,11 @@ class TestResult(TeacherRequiredMixin, LoginRequiredMixin, DetailView):
 class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseMixin, View):
     """Создание вопроса для теста"""
     model = Question
-    template_name = ''
+    template_name = 'tasks/teacher/question/question_create.html'
+
+    def get(self, request, pk, *args, **kwargs):
+        form = QuestionForm()
+        return self.render_to_response({'form': form})
 
     def post(self, request, pk):
         test = get_object_or_404(Test, pk=pk, author=request.user)
@@ -101,7 +105,7 @@ class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseM
             question = form.save(commit=False)
             question.test = test
             question.save()
-            return redirect('change_question', test.pk, question.pk)
+            return redirect('question_change', test.pk, question.pk)
         else:
             form = QuestionForm()
         return self.render_to_response({'test': test, 'form': form})
@@ -110,7 +114,14 @@ class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseM
 class QuestionChange(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseMixin, View):
     """Изменение вопроса"""
     model = Question
-    template_name = ""
+    template_name = "tasks/teacher/question/question_change.html"
+
+    def get(self, request, question_pk, test_pk, *args, **kwargs):
+        test = get_object_or_404(Test, pk=test_pk, author=request.user)
+        question = get_object_or_404(Question, pk=question_pk, test=test)
+        form = QuestionForm(instance=question)
+        answer_formset = InlineAnswerFormSet(instance=question)
+        return self.render_to_response({'form': form, 'answer_formset': answer_formset})
 
     def post(self, request, test_pk, question_pk):
         test = get_object_or_404(Test, pk=test_pk, author=request.user)
@@ -135,7 +146,7 @@ class QuestionDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
     """Удаление вопроса"""
     model = Question
     context_object_name = 'question'
-    template_name = ''
+    template_name = 'tasks/teacher/question/question_delete.html'
     pk_url_kwarg = 'question_pk'
 
     def get_context_data(self, **kwargs):
@@ -147,7 +158,7 @@ class QuestionDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Question.objects.filter(quiz__author=self.request.user)
+        return Question.objects.filter(test__author=self.request.user)
 
     def get_success_url(self):
         question = self.get_object()

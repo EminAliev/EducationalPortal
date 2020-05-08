@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags crispy_forms_filters %}
+{% block content %}
+    <h2 class="mb-3">{{ question.question }}</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ answer_formset.management_form }}
+        {{ form }}
+        <div class="card mb-3{% if answer_formset.errors %} border-danger{% endif %}">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                        <strong>Ответы</strong>
+                    </div>
+                    <div class="col-2">
+                        <strong>Правильно?</strong>
+                    </div>
+                    <div class="col-2">
+                        <strong>Удалить?</strong>
+                    </div>
+                </div>
+            </div>
+            {% for error in answer_formset.non_form_errors %}
+                <div class="card-body bg-danger border-danger text-white py-2">{{ error }}</div>
+            {% endfor %}
+            <div class="list-group list-group-flush list-group-formset">
+                {% for f in answer_formset %}
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-8">
+                                {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+                                {{ f.question }}
+                                {% if f.instance.pk and f.question.value != f.question.question %}
+                                    <p class="mb-0 mt-1"><small class="text-muted font-italic"><strong>Old
+                                        answer:</strong> {{ f.instance.question }}</small></p>{% endif %}
+                            </div>
+                            <div class="col-2">
+                                {{ f.correct_answer }}
+                            </div>
+                            <div class="col-2">
+                                {% if f.instance.pk %}
+                                    {{ f.DELETE }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+    </form>
+{% endblock %}

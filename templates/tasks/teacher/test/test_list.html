@@ -19,7 +19,7 @@ transform: translate(-50%, 0); " class="btn btn-primary mb-3" role="button">Со
             <tbody>
             {% for t in test %}
                 <tr>
-                    <td class="align-middle"><a href="">{{ t.name }}</a></td>
+                    <td class="align-middle"><a href="{% url 'test_change' t.pk %}">{{ t.name }}</a></td>
                     <td class="align-middle">{{ t.course.name }}</td>
                     <td class="align-middle">{{ t.questions }}</td>
                     <td class="align-middle">{{ t.complete_test }}</td>
