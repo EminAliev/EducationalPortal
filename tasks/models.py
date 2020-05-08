@@ -1,6 +1,5 @@
 from django.db import models
 
-from courses.models import Course
 from users.models import User, Student
 
 
@@ -8,7 +7,7 @@ class Test(models.Model):
     """Класс модели тестов"""
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='test')
     name = models.CharField(max_length=255)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='test')
+    course = models.ForeignKey("courses.Course", on_delete=models.CASCADE, related_name='test')
 
     def __str__(self):
         return self.name
@@ -43,5 +42,5 @@ class CompleteTest(models.Model):
 
 class StudentAnswerTest(models.Model):
     """Класс модели ответа студента"""
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='test_answers')
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='tests_answers')
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_student')

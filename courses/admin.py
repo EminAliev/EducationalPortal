@@ -30,8 +30,7 @@ class SubjectAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
-class TaskAdmin(admin.ModelAdmin):
-    """Админка заданий"""
+"""class TaskAdmin(admin.ModelAdmin):
     list_display = all_fields_admin(Task, 'id', 'description')
     list_display_links = ("name",)
     actions = ['show_task']
@@ -43,10 +42,8 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 class RealizationTaskAdmin(admin.ModelAdmin):
-    """Админка выполнения заданий"""
 
     class MessagesTaskAdmin(admin.TabularInline):
-        """Добавления вопросов при создании теста"""
         model = MessagesTask
 
     inlines = [
@@ -64,11 +61,10 @@ class RealizationTaskAdmin(admin.ModelAdmin):
 
 
 class MessagesTaskAdmin(admin.ModelAdmin):
-    """Админка для комментариев в задании"""
     list_display = ("user", "task_realization", "date_created")
 
 
 admin.site.register(Content)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(TaskRealization, RealizationTaskAdmin)
-admin.site.register(MessagesTask, MessagesTaskAdmin)
+admin.site.register(MessagesTask, MessagesTaskAdmin)"""

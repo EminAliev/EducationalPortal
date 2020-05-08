@@ -1,14 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from tasks.models import Test
-
 
 class User(AbstractUser):
     """Класс модели пользователя"""
 
-    student = models.BooleanField(default=False, verbose_name='Студент?')
-    teacher = models.BooleanField(default=False, verbose_name='Преподаватель?')
+    is_student = models.BooleanField(default=False, verbose_name='Студент?')
+    is_teacher = models.BooleanField(default=False, verbose_name='Преподаватель?')
 
     class Meta:
         db_table = 'user'
@@ -22,7 +20,7 @@ class User(AbstractUser):
 class Student(models.Model):
     """Класс модели студента"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    test = models.ManyToManyField(Test)
+    test = models.ManyToManyField("tasks.Test")
 
     def __str__(self):
         return self.user.username

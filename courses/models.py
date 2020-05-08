@@ -34,8 +34,6 @@ class Course(models.Model):
     view = models.TextField(verbose_name='Описание курса')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания курса')
     followers = models.ManyToManyField(User, related_name='courses_joined', blank=True, verbose_name='Учащиеся курса')
-    test_in_course = models.ForeignKey(Test, verbose_name="Тест", on_delete=models.SET_NULL, blank=True,
-                                       null=True)
     counter_tasks = models.PositiveIntegerField('Количество заданий', default=0)
 
     class Meta:
@@ -148,8 +146,6 @@ class Task(models.Model):
     description = models.TextField('Описание задания')
     date_start = models.DateTimeField('Дата начала выполнения задания')
     date_end = models.DateTimeField('Дата окончания выполнения задания')
-    test = models.ForeignKey(Test, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Тест',
-                             related_name='tasks')
     active = models.BooleanField("Вывести задание", default=False)
 
     class Meta:

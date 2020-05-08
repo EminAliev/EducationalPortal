@@ -1,16 +1,14 @@
-from django.contrib import admin
+"""from django.contrib import admin
 from django import forms
 
-from tasks.models import Question, Answer, Test, CounterAnswer, TestSubject
+from tasks.models import Question, Answer, Test
 
 
 def all_fields_admin(cls, *exclude_fields):
-    """Забирает все поля для list_display"""
     return [field.name for field in cls._meta.fields if field.name not in exclude_fields]
 
 
 class AdminQuestionForm(forms.ModelForm):
-    """Форма для админки вопросов,"""
 
     class Meta:
         model = Question
@@ -30,10 +28,8 @@ class AdminQuestionForm(forms.ModelForm):
 
 
 class AdminQuestion(admin.ModelAdmin):
-    """Админка вопросов"""
 
     class AnswerInline(admin.TabularInline):
-        """Добавления вариантов ответа при создании вопроса"""
         model = Answer
 
     form = AdminQuestionForm
@@ -45,10 +41,8 @@ class AdminQuestion(admin.ModelAdmin):
 
 
 class AdminTest(admin.ModelAdmin):
-    """Админка тестов"""
 
     class QuestionInline(admin.TabularInline):
-        """Добавление вопросов при создании теста"""
         model = Question
 
     list_display = all_fields_admin(Test)
@@ -58,17 +52,11 @@ class AdminTest(admin.ModelAdmin):
 
 
 class AdminAnswer(admin.ModelAdmin):
-    """Админка вариантов ответа"""
     list_display = all_fields_admin(Answer)
 
 
-class AnswersCounterAdmin(admin.ModelAdmin):
-    """Админка ответов на тесты"""
-    list_display = all_fields_admin(CounterAnswer)
 
 
-admin.site.register(TestSubject)
 admin.site.register(Test, AdminTest)
 admin.site.register(Question, AdminQuestion)
-admin.site.register(Answer, AdminAnswer)
-admin.site.register(CounterAnswer, AnswersCounterAdmin)
+admin.site.register(Answer, AdminAnswer)"""
