@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="register">
+        <h2>Регистрация</h2>
+        <p class="lead">Кто вы</p>
+        <a href="{% url 'register_student' %}" class="btn btn-student btn-lg" role="button">Я учащийся</a>
+        <a href="{% url 'register_teacher' %}" class="btn btn-teacher btn-lg" role="button">Я учитель</a>
+    </div>
+{% endblock %}

@@ -1,7 +1,48 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.db import transaction
 
 from courses.models import Course
-from users.models import User, Profile
+from users.models import User, Profile, Student
+
+
+class StudentRegisterForm(UserCreationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(StudentRegisterForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = None
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_student = True
+        user.save()
+        student = Student.objects.create(user=user)
+        return user
+
+
+class TeacherRegisterForm(UserCreationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(TeacherRegisterForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = None
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.is_teacher = True
+        if commit:
+            user.save()
+        return user
 
 
 class LoginForm(forms.Form):
@@ -10,17 +51,9 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 
-class RegisterForm(forms.ModelForm):
-    """Форма для регистрации"""
-    confirm_password = forms.CharField(widget=forms.PasswordInput())
-
-    class Meta:
-        model = User
-        fields = {"username", "email", "password"}
-
-
 class ProfileEditForm(forms.ModelForm):
     """Форма для изменении профиля"""
+
     class Meta:
         model = Profile
         fields = ('image',)
@@ -28,6 +61,7 @@ class ProfileEditForm(forms.ModelForm):
 
 class UserEditForm(forms.ModelForm):
     """Форма для изменения данных"""
+
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')

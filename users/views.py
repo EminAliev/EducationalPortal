@@ -4,10 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.views.generic import FormView, ListView, DetailView
+from django.views.generic import FormView, ListView, DetailView, CreateView, TemplateView
 
 from courses.models import Course
-from users.forms import LoginForm, RegisterForm, CourseForm, ProfileEditForm, UserEditForm
+from users.forms import LoginForm, RegisterForm, CourseForm, ProfileEditForm, UserEditForm, StudentRegisterForm, \
+    TeacherRegisterForm
 from users.models import User, Profile
 
 
@@ -33,6 +34,10 @@ def login_view(request):
         return render(request, "users/auth/signIn.html", {"form": form})
 
 
+class RegisterView(TemplateView):
+    template_name = 'users/auth/signUp_base.html'
+
+
 @login_required(login_url="/auth/signIn")
 def logout_view(request):
     """Выход из системы"""
@@ -40,23 +45,34 @@ def logout_view(request):
     return HttpResponseRedirect("/auth/signIn")
 
 
-def register(request):
-    """Регистрация нового пользователя"""
-    if request.method == "POST":
+class StudentRegister(CreateView):
+    model = User
+    form_class = StudentRegisterForm
+    template_name = 'users/auth/signUp.html'
 
-        form = RegisterForm(request.POST)
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'student'
+        return super().get_context_data(**kwargs)
 
-        if form.is_valid():
-            new_user = User.objects.create_user(
-                form.cleaned_data["username"],
-                email=form.cleaned_data["email"],
-                password=form.cleaned_data["password"])
-            Profile.objects.create(user=new_user)
-            return redirect(reverse("login"))
-        else:
-            return render(request, "users/auth/signUp.html", {"form": form})
-    else:
-        return render(request, "users/auth/signUp.html", {"form": RegisterForm()})
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index')
+
+
+class TeacherRegister(CreateView):
+    model = User
+    form_class = TeacherRegisterForm
+    template_name = 'users/auth/signUp.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'teacher'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index')
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
