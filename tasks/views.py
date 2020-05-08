@@ -12,6 +12,7 @@ from users.views import TeacherRequiredMixin
 
 
 class TestView(TeacherRequiredMixin, LoginRequiredMixin, ListView):
+    """Список тестов"""
     model = Test
     ordering = ('name',)
     context_object_name = 'test'
@@ -25,6 +26,7 @@ class TestView(TeacherRequiredMixin, LoginRequiredMixin, ListView):
 
 
 class TestCreate(TeacherRequiredMixin, LoginRequiredMixin, CreateView):
+    """Создание тестов"""
     model = Test
     fields = ('name', 'course',)
     template_name = 'tasks/teacher/test/test_create.html'
@@ -37,6 +39,7 @@ class TestCreate(TeacherRequiredMixin, LoginRequiredMixin, CreateView):
 
 
 class TestChange(TeacherRequiredMixin, LoginRequiredMixin, UpdateView):
+    """Изменение теста"""
     model = Test
     fields = ('name', 'course',)
     context_object_name = 'test'
@@ -54,6 +57,7 @@ class TestChange(TeacherRequiredMixin, LoginRequiredMixin, UpdateView):
 
 
 class TestDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
+    """Удаление теста"""
     model = Test
     context_object_name = 'test'
     template_name = 'tasks/teacher/test/test_delete.html'
@@ -67,6 +71,7 @@ class TestDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
 
 
 class TestResult(TeacherRequiredMixin, LoginRequiredMixin, DetailView):
+    """Результаты тестов"""
     model = Test
     context_object_name = 'test'
     template_name = 'tasks/teacher/test/test_result.html'
@@ -85,6 +90,7 @@ class TestResult(TeacherRequiredMixin, LoginRequiredMixin, DetailView):
 
 
 class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseMixin, View):
+    """Создание вопроса для теста"""
     model = Question
     template_name = ''
 
@@ -102,6 +108,7 @@ class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseM
 
 
 class QuestionChange(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseMixin, View):
+    """Изменение вопроса"""
     model = Question
     template_name = ""
 
@@ -125,6 +132,7 @@ class QuestionChange(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseM
 
 
 class QuestionDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
+    """Удаление вопроса"""
     model = Question
     context_object_name = 'question'
     template_name = ''
