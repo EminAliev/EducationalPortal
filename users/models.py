@@ -1,3 +1,5 @@
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -42,3 +44,4 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
+

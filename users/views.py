@@ -1,15 +1,30 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, DetailView, CreateView, TemplateView
 
 from courses.models import Course
-from users.forms import LoginForm, RegisterForm, CourseForm, ProfileEditForm, UserEditForm, StudentRegisterForm, \
+from users.forms import LoginForm, CourseForm, ProfileEditForm, UserEditForm, StudentRegisterForm, \
     TeacherRegisterForm
 from users.models import User, Profile
+
+
+class StudentRequiredMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_student:
+            raise PermissionDenied
+        return super(StudentRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class TeacherRequiredMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_teacher:
+            raise PermissionDenied
+        return super(TeacherRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
 def login_view(request):
@@ -35,6 +50,7 @@ def login_view(request):
 
 
 class RegisterView(TemplateView):
+    """Отображение страницы регистрации"""
     template_name = 'users/auth/signUp_base.html'
 
 
@@ -46,6 +62,7 @@ def logout_view(request):
 
 
 class StudentRegister(CreateView):
+    """Регистрация студента"""
     model = User
     form_class = StudentRegisterForm
     template_name = 'users/auth/signUp.html'
@@ -61,6 +78,7 @@ class StudentRegister(CreateView):
 
 
 class TeacherRegister(CreateView):
+    """Регистрация учителя"""
     model = User
     form_class = TeacherRegisterForm
     template_name = 'users/auth/signUp.html'

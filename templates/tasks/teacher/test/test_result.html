@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 style="text-align: center" class="mb-3">{{ test.name }} Результаты</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <strong>Выполненные тесты</strong>
+            <span class="badge badge-pill badge-primary float-right">Средний результат: {{ test_result.average_result|default_if_none:0.0 }}</span>
+        </div>
+        <table class="table mb-0">
+            <thead>
+            <tr>
+                <th>Студент</th>
+                <th>Дата выполнения</th>
+                <th>Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c_t in complete_test %}
+                <tr>
+                    <td>{{ c_t.student.user.username }}</td>
+                    <td>{{ c_t.date }}</td>
+                    <td>{{ c_t.result }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="card-footer text-muted">
+            Всего выполнивших: <strong>{{ all_complete_tests }}</strong>
+        </div>
+    </div>
+{% endblock %}

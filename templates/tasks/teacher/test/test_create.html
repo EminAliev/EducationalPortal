@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 style="text-align: center" class="mb-3">Новый тест</h2>
+    <div class="row">
+        <div style=" margin:0 25% 0 25%;
+  width:50%; top: 50px; left: 15%" class="col-md-6 col-sm-8 col-12">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form }}
+                <button style="top: 200px; left: -35%" type="submit" class="btn btn-success">Сохранить</button>
+                <a style="top: 200px; left: -30%" href="{% url 'list' %}" class="btn btn-outline-secondary" role="button">Отменить</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
