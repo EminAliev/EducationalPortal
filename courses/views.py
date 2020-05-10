@@ -1,4 +1,4 @@
-from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
+from django.core.mail import send_mail
 from django.contrib import messages
 from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -13,8 +13,9 @@ from django.views.generic.base import TemplateResponseMixin, View
 from django.views.generic.edit import FormMixin
 
 from EducationalPortal import settings
-from courses.forms import CourseModuleFormSet, AnswerForm, CommentForm
-from courses.models import Course, Module, Content, Subject, Task, MessagesTask, TaskRealization, Comment
+from courses.forms import CourseModuleFormSet, AnswerForm, CommentForm, ContactForm
+from courses.models import Course, Module, Content, Subject, Task, MessagesTask, TaskRealization, Comment, Contact
+from courses.tasks import send_spam_email
 from users.forms import CourseForm
 
 
@@ -170,7 +171,7 @@ class CourseInView(FormMixin, DetailView):
     """Подробное описания курса"""
     model = Course
     template_name = 'courses/courses_all_in.html'
-    #context_object_name = 'get_course'
+    # context_object_name = 'get_course'
     form_class = CommentForm
 
     def get_success_url(self):
@@ -247,3 +248,22 @@ class TaskCourse(View):
         else:
             messages.add_message(self.request, settings.TASK_MESS, 'Ошибка сохранения')
         return HttpResponseRedirect(request.path)
+
+
+def send(email):
+    send_mail('Вы подписались на рассылку', 'Наш сайт будет вас уведомлять о новых курсов и фичах сайта',
+              'educationalplatform11@gmail.com', [email],
+              fail_silently=False)
+
+
+class ContactView(CreateView):
+    model = Contact
+    form_class = ContactForm
+    success_url = '/'
+    template_name = 'mail/contact.html'
+
+    def form_valid(self, form):
+        form.save()
+        # send(form.instance.email)
+        send_spam_email.delay(form.instance.email)
+        return super().form_valid(form)

@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from rest_framework import routers
 
 from api.courses import views
+from courses.views import ContactView
 from .yasg import urlpatterns as doc_urls
 
 from api.courses.views import SubjectView, SubjectInView, CourseView
@@ -34,6 +35,7 @@ urlpatterns = [
     path('course/', include('courses.urls')),
     path('test/', include('tasks.urls')),
     path('', TemplateView.as_view(template_name="index.html"), name='index'),
+    path('contact/', ContactView.as_view(), name='contact'),
 
     # REST API
     path('api/subjects/', SubjectView.as_view(), name='subjects_all'),

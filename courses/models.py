@@ -233,3 +233,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.user, self.course)
+
+
+class Contact(models.Model):
+    """Класс модели подписки по email"""
+    name = models.CharField(max_length=30, verbose_name='Имя')
+    email = models.CharField(max_length=50, verbose_name='Email')
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return self.name

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from courses.models import Course, Module, Subject, Content, Task, MessagesTask, TaskRealization
+from courses.models import Course, Module, Subject, Content, Task, MessagesTask, TaskRealization, Contact
 
 
 def all_fields_admin(cls, *exclude_fields):
@@ -28,6 +28,12 @@ class SubjectAdmin(admin.ModelAdmin):
     """Админка предметов"""
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    """Админка подписки"""
+    list_display = ('name', 'email')
 
 
 """class TaskAdmin(admin.ModelAdmin):
@@ -62,6 +68,8 @@ class RealizationTaskAdmin(admin.ModelAdmin):
 
 class MessagesTaskAdmin(admin.ModelAdmin):
     list_display = ("user", "task_realization", "date_created")
+
+
 
 
 admin.site.register(Content)

@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .views import CourseView, CourseCreateView, CourseUpdateView, CourseDeleteView, ModuleCourseCreateUpdateView, \
     ContentCancelView, ContentListView, CourseListView, \
-    CourseInView, ContentViewCreate, TaskCourse
+    CourseInView, ContentViewCreate, TaskCourse, ContactView
 
 urlpatterns = [
     path('list/',
