@@ -150,21 +150,6 @@ class ContentListView(TemplateResponseMixin, View):
         return self.render_to_response({'module': module_object})
 
 
-"""class SortViewForModules(CsrfExemptMixin, JsonRequestResponseMixin, View):
-    def post(self, request):
-        for id, sort in self.request_json.items():
-            Module.objects.filter(id=id, course__user=request.user).update(sort=sort)
-        return self.render_json_response({'saved': 'OK'})
-
-
-class SortViewForContent(CsrfExemptMixin, JsonRequestResponseMixin, View):
-
-    def post(self, request):
-        for id, sort in self.request_json.items():
-            Content.objects.filter(id=id, module__course__user=request.user).update(sort=sort)
-        return self.render_json_response({'saved': 'OK'})"""
-
-
 class CourseListView(TemplateResponseMixin, View):
     """Список курсов с возможностью фильтрации"""
     model = Course

@@ -216,3 +216,20 @@ class MessagesTask(models.Model):
     class Meta:
         verbose_name = "Сообщение в задании"
         verbose_name_plural = "Сообщения в задании"
+
+
+class Comment(models.Model):
+    """Класс модели комментариев"""
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    text = models.TextField(verbose_name='Текст комментария')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Дата комментария')
+
+    class Meta:
+        ordering = ('created',)
+        db_table = 'comments'
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return 'Comment by {} on {}'.format(self.user, self.course)
