@@ -1,17 +1,20 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Count, Avg
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.base import View, TemplateResponseMixin
+from functools import wraps
 
-from tasks.forms import QuestionForm, InlineAnswerFormSet
-from tasks.models import Test, Question
-from users.views import TeacherRequiredMixin
+from tasks.forms import QuestionForm, InlineAnswerFormSet, PassTestForm
+from tasks.models import Test, Question, CompleteTest
+from users.views import TeacherRequiredMixin, StudentRequiredMixin, teacher_required, student_required
 
 
-class TestView(TeacherRequiredMixin, LoginRequiredMixin, ListView):
+class TeacherTestView(TeacherRequiredMixin, LoginRequiredMixin, ListView):
     """Список тестов"""
     model = Test
     ordering = ('name',)
@@ -25,7 +28,7 @@ class TestView(TeacherRequiredMixin, LoginRequiredMixin, ListView):
         return qs
 
 
-class TestCreate(TeacherRequiredMixin, LoginRequiredMixin, CreateView):
+class TeacherTestCreate(TeacherRequiredMixin, LoginRequiredMixin, CreateView):
     """Создание тестов"""
     model = Test
     fields = ('name', 'course',)
@@ -38,7 +41,7 @@ class TestCreate(TeacherRequiredMixin, LoginRequiredMixin, CreateView):
         return redirect('test_change', test.pk)
 
 
-class TestChange(TeacherRequiredMixin, LoginRequiredMixin, UpdateView):
+class TeacherTestChange(TeacherRequiredMixin, LoginRequiredMixin, UpdateView):
     """Изменение теста"""
     model = Test
     fields = ('name', 'course',)
@@ -56,7 +59,7 @@ class TestChange(TeacherRequiredMixin, LoginRequiredMixin, UpdateView):
         return reverse('test_change', kwargs={'pk': self.object.pk})
 
 
-class TestDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
+class TeacherTestDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
     """Удаление теста"""
     model = Test
     context_object_name = 'test'
@@ -70,7 +73,7 @@ class TestDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
         return self.request.user.test.all()
 
 
-class TestResult(TeacherRequiredMixin, LoginRequiredMixin, DetailView):
+class TeacherTestResult(TeacherRequiredMixin, LoginRequiredMixin, DetailView):
     """Результаты тестов"""
     model = Test
     context_object_name = 'test'
@@ -90,7 +93,7 @@ class TestResult(TeacherRequiredMixin, LoginRequiredMixin, DetailView):
 
 
 class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseMixin, View):
-    """Создание вопроса для теста"""
+    """Создание нового вопроса"""
     model = Question
     template_name = 'tasks/teacher/question/question_create.html'
 
@@ -111,35 +114,30 @@ class QuestionCreate(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseM
         return self.render_to_response({'test': test, 'form': form})
 
 
-class QuestionChange(TeacherRequiredMixin, LoginRequiredMixin, TemplateResponseMixin, View):
-    """Изменение вопроса"""
-    model = Question
-    template_name = "tasks/teacher/question/question_change.html"
-
-    def get(self, request, question_pk, test_pk, *args, **kwargs):
-        test = get_object_or_404(Test, pk=test_pk, author=request.user)
-        question = get_object_or_404(Question, pk=question_pk, test=test)
-        form = QuestionForm(instance=question)
-        answer_formset = InlineAnswerFormSet(instance=question)
-        return self.render_to_response({'form': form, 'answer_formset': answer_formset})
-
-    def post(self, request, test_pk, question_pk):
-        test = get_object_or_404(Test, pk=test_pk, author=request.user)
-        question = get_object_or_404(Question, pk=question_pk, test=test)
-        form = QuestionForm(request.POST, instance=question)
+@login_required
+@teacher_required
+def question_change(request, test_pk, question_pk):
+    """Изменение вопроса и добавление к вопросу ответы"""
+    test = get_object_or_404(Test, pk=test_pk, author=request.user)
+    question = get_object_or_404(Question, pk=question_pk, test=test)
+    if request.method == 'POST':
+        question_form = QuestionForm(request.POST, instance=question)
         answer_formset = InlineAnswerFormSet(request.POST, instance=question)
-        if form.is_valid() and answer_formset.is_valid():
+        if question_form.is_valid() and answer_formset.is_valid():
             with transaction.atomic():
-                form.save()
+                question_form.save()
                 answer_formset.save()
             return redirect('test_change', test.pk)
-        else:
-            form = QuestionForm(instance=question)
-            answer_formset = InlineAnswerFormSet(instance=question)
-        return self.render_to_response({'test': test,
-                                        'question': question,
-                                        'form': form,
-                                        'answer_formset': answer_formset})
+    else:
+        question_form = QuestionForm(instance=question)
+        answer_formset = InlineAnswerFormSet(instance=question)
+
+    return render(request, 'tasks/teacher/question/question_change.html', {
+        'test': test,
+        'question': question,
+        'question_form': question_form,
+        'answer_formset': answer_formset
+    })
 
 
 class QuestionDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
@@ -163,3 +161,65 @@ class QuestionDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         question = self.get_object()
         return reverse('test_change', kwargs={'pk': question.test_id})
+
+
+class StudentTestView(StudentRequiredMixin, LoginRequiredMixin, ListView):
+    model = Test
+    ordering = ('name',)
+    context_object_name = 'test'
+    template_name = 'tasks/student/list.html'
+
+    def get_queryset(self):
+        qs = Test.objects.all()
+        return qs
+
+
+class StudentCompleteTest(ListView):
+    model = CompleteTest
+    context_object_name = 'complete_test'
+    template_name = 'tasks/student/all_complete_test.html'
+
+    def get_queryset(self):
+        qs = self.request.user.student.complete_test.select_related('test', 'test__course').order_by('test__name')
+        return qs
+
+
+@login_required
+@student_required
+def pass_test(request, pk):
+    test = get_object_or_404(Test, pk=pk)
+    student = request.user.student
+
+    if student.test.filter(pk=pk).exists():
+        return render(request, 'tasks/student/complete_test.html')
+
+    all_questions = test.questions.count()
+    not_completed_questions = student.get_not_completed_questions(test)
+    all_not_completed_questions = not_completed_questions.count()
+    print(not_completed_questions, all_not_completed_questions)
+    result = 100 - round(((all_not_completed_questions - 1) / all_questions) * 100)
+    question = not_completed_questions.first()
+
+    if request.method == 'POST':
+        pass_form = PassTestForm(question=question, data=request.POST)
+        if pass_form.is_valid():
+            with transaction.atomic():
+                student_answer = pass_form.save(commit=False)
+                student_answer.student = student
+                student_answer.save()
+                if student.get_not_completed_questions(test).exists():
+                    return redirect('pass_test', pk)
+                else:
+                    correct_answers = student.tests_answers.filter(answer__question__test=test,
+                                                                   answer__correct_answer=True).count()
+                    result = round((correct_answers / all_questions) * 100.0, 2)
+                    CompleteTest.objects.create(student=student, test=test, result=result)
+                    return redirect('test_list')
+    else:
+        pass_form = PassTestForm(question=question)
+    return render(request, 'tasks/student/complete_test.html', {
+        'test': test,
+        'question': question,
+        'pass_form': pass_form,
+        'result': result
+    })

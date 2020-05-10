@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,16 +15,38 @@ from users.forms import LoginForm, CourseForm, ProfileEditForm, UserEditForm, St
 from users.models import User, Profile
 
 
+def teacher_required(f):
+    @wraps(f)
+    def g(request, *args, **kwargs):
+        if request.user.is_student:
+            raise PermissionDenied
+        else:
+            return f(request, *args, **kwargs)
+
+    return g
+
+
+def student_required(f):
+    @wraps(f)
+    def g(request, *args, **kwargs):
+        if request.user.is_teacher:
+            raise PermissionDenied
+        else:
+            return f(request, *args, **kwargs)
+
+    return g
+
+
 class StudentRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_student:
+        if request.user.is_teacher:
             raise PermissionDenied
         return super(StudentRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
 class TeacherRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_teacher:
+        if request.user.is_student:
             raise PermissionDenied
         return super(TeacherRequiredMixin, self).dispatch(request, *args, **kwargs)
 

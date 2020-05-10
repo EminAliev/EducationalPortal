@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags crispy_forms_filters %}
+
+
 {% block content %}
-    <h2 class="mb-3">{{ question.question }}</h2>
+    <h2 class="mb-3">{{ question.question_text }}</h2>
     <form method="post" novalidate>
         {% csrf_token %}
         {{ answer_formset.management_form }}
-        {{ form }}
+        {{ question_form }}
         <div class="card mb-3{% if answer_formset.errors %} border-danger{% endif %}">
             <div class="card-header">
                 <div class="row">
                     <div class="col-8">
-                        <strong>Ответы</strong>
+                        <strong>Answers</strong>
                     </div>
                     <div class="col-2">
-                        <strong>Правильно?</strong>
+                        <strong>Correct?</strong>
                     </div>
                     <div class="col-2">
-                        <strong>Удалить?</strong>
+                        <strong>Delete?</strong>
                     </div>
                 </div>
             </div>
@@ -24,22 +25,22 @@
                 <div class="card-body bg-danger border-danger text-white py-2">{{ error }}</div>
             {% endfor %}
             <div class="list-group list-group-flush list-group-formset">
-                {% for f in answer_formset %}
+                {% for form in answer_formset %}
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-8">
-                                {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
-                                {{ f.question }}
-                                {% if f.instance.pk and f.question.value != f.question.question %}
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                {{ form.answer }}
+                                {% if form.instance.pk and form.answer.value != form.instance.answer %}
                                     <p class="mb-0 mt-1"><small class="text-muted font-italic"><strong>Old
-                                        answer:</strong> {{ f.instance.question }}</small></p>{% endif %}
+                                        answer:</strong> {{ form.instance.answer }}</small></p>{% endif %}
                             </div>
                             <div class="col-2">
-                                {{ f.correct_answer }}
+                                {{ form.correct_answer }}
                             </div>
                             <div class="col-2">
-                                {% if f.instance.pk %}
-                                    {{ f.DELETE }}
+                                {% if form.instance.pk %}
+                                    {{ form.DELETE }}
                                 {% endif %}
                             </div>
                         </div>
@@ -47,6 +48,12 @@
                 {% endfor %}
             </div>
         </div>
-        <button type="submit" class="btn btn-success">Сохранить</button>
+        <p>
+            <small class="form-text text-muted">Your question may have at least <strong>2</strong> answers and maximum
+                <strong>10</strong> answers. Select at least one correct answer.</small>
+        </p>
+        <button type="submit" class="btn btn-success">Save changes</button>
+        <a href="{% url 'test_change' test.pk %}" class="btn btn-outline-secondary" role="button">Nevermind</a>
+        <a href="{% url 'question_delete' test.pk question.pk %}" class="btn btn-danger float-right">Delete</a>
     </form>
 {% endblock %}

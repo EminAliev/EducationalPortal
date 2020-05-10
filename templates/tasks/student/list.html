@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card">
+        <table class="table mb-0">
+            <thead>
+            <tr>
+                <th>Тест</th>
+                <th>Курс</th>
+                <th>Число вопросов</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for t in test %}
+                <tr>
+                    <td class="align-middle">{{ t.name }}</td>
+                    <td class="align-middle">{{ t.course.name }}</td>
+                    <td class="align-middle">{{ t.questions_count }} вопросов</td>
+                    <td class="text-right">
+                        <a href="{% url 'pass_test' t.pk %}" class="btn btn-primary">Начать тест</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="bg-light text-center font-italic" colspan="4">Для вас нет тестов
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

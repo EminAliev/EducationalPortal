@@ -16,10 +16,10 @@ class Test(models.Model):
 class Question(models.Model):
     """Класс модели вопрос"""
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
-    question = models.TextField('Вопрос')
+    question_text = models.TextField('Вопрос')
 
     def __str__(self):
-        return self.question
+        return self.question_text
 
 
 class Answer(models.Model):

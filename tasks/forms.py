@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 
-from tasks.models import Question, Answer
+from tasks.models import Question, Answer, StudentAnswerTest
 from django import forms
 
 
@@ -10,7 +10,7 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ('question',)
+        fields = ('question_text',)
 
 
 class TrueAnswerForm(forms.BaseInlineFormSet):
@@ -30,6 +30,20 @@ class TrueAnswerForm(forms.BaseInlineFormSet):
 
 # Получаем формы, когда объекты ответов, будут связаны с объектами вопросов
 InlineAnswerFormSet = inlineformset_factory(Question, Answer, formset=TrueAnswerForm,
-                                            fields=('question', 'correct_answer'),
+                                            fields=('answer', 'correct_answer'),
                                             min_num=2, validate_min=True, max_num=10, validate_max=True
                                             )
+
+
+class PassTestForm(forms.ModelForm):
+    answer = forms.ModelChoiceField(queryset=Answer.objects.none(), widget=forms.RadioSelect(), required=True,
+                                    empty_label=None)
+
+    class Meta:
+        model = StudentAnswerTest
+        fields = ('answer',)
+
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop('question')
+        super().__init__(*args, **kwargs)
+        self.fields['answer'].queryset = question.answers.order_by('question')
