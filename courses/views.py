@@ -10,10 +10,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.base import TemplateResponseMixin, View
+from django.views.generic.edit import FormMixin
 
 from EducationalPortal import settings
-from courses.forms import CourseModuleFormSet, AnswerForm
-from courses.models import Course, Module, Content, Subject, Task, MessagesTask, TaskRealization
+from courses.forms import CourseModuleFormSet, AnswerForm, CommentForm
+from courses.models import Course, Module, Content, Subject, Task, MessagesTask, TaskRealization, Comment
 from users.forms import CourseForm
 
 
@@ -165,15 +166,35 @@ class CourseListView(TemplateResponseMixin, View):
             {'subjects_objects': subjects_objects, 'subject': subject, 'courses_objects': courses_objects})
 
 
-class CourseInView(DetailView):
+class CourseInView(FormMixin, DetailView):
     """Подробное описания курса"""
     model = Course
     template_name = 'courses/courses_all_in.html'
+    #context_object_name = 'get_course'
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse_lazy('courses_all_in', kwargs={'slug': self.get_object().slug})
 
     def get_context_data(self, **kwargs):
         context = super(CourseInView, self).get_context_data(**kwargs)
         context['course_form'] = CourseForm(initial={'course': self.object})
+        context['comments'] = Comment.objects.filter(course=self.object.id).select_related()
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.course = self.get_object()
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
 
 class TaskCourse(View):

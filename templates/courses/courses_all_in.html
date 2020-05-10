@@ -27,6 +27,27 @@
                     Зарегистрируйтесь на сайте
                 </a>
             {% endif %}
+            <p>Отзывы</p>
+
+            <hr>
+            <ul>
+                {% for comment in comments %}
+                    <li>
+                        Дата: {{ comment.created }}
+                        Пользователь: {{ comment.user.get_full_name }}
+                        Отзыв: {{ comment.text }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <p>Добавить отзыв</p>
+            <div class="col-4">
+                <form action="" id="add_form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </form>
+                <button style="margin-top: 40px" form="add_form" type="submit" class="btn btn-primary">Добавить
+                </button>
+            </div>
         </div>
     {% endwith %}
 {% endblock %}

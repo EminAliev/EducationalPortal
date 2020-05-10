@@ -220,7 +220,7 @@ class MessagesTask(models.Model):
 
 class Comment(models.Model):
     """Класс модели комментариев"""
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', related_name='comments_course')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     text = models.TextField(verbose_name='Текст комментария')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Дата комментария')
