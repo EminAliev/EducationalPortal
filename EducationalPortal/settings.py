@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'tasks',
     'drf_yasg',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +59,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'EducationalPortal.urls'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 TEMPLATES = [
     {

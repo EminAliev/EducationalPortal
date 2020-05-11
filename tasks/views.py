@@ -211,7 +211,7 @@ def pass_result(request, pk):
                 keys.append(int(key))
                 keys_answers.append(data_dict[key][0])
             except:
-                print("Csrf")
+                print("Нет вопросов в тесте")
         for answer in answers:
             if answer.correct_answer:
                 all_answers.append(answer.answer)
@@ -222,10 +222,4 @@ def pass_result(request, pk):
         efficienty = (result / all) * 100
         student = request.user.student
         CompleteTest.objects.create(student=student, test=test, result=result)
-    return render(request,
-                  'tasks/student/result.html',
-                  {'result': result,
-                   'efficienty': efficienty,
-                   'all': all,
-
-                   })
+    return render(request, 'tasks/student/result.html', {'result': result, 'efficienty': efficienty, 'all': all})
