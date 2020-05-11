@@ -10,7 +10,7 @@ from django.views.generic.base import View, TemplateResponseMixin
 from functools import wraps
 
 from tasks.forms import QuestionForm, InlineAnswerFormSet, PassTestForm
-from tasks.models import Test, Question, CompleteTest
+from tasks.models import Test, Question, CompleteTest, Answer
 from users.views import TeacherRequiredMixin, StudentRequiredMixin, teacher_required, student_required
 
 
@@ -170,7 +170,7 @@ class StudentTestView(StudentRequiredMixin, LoginRequiredMixin, ListView):
     template_name = 'tasks/student/list.html'
 
     def get_queryset(self):
-        qs = Test.objects.all()
+        qs = Test.objects.all().annotate(questions_count=Count('questions'))
         return qs
 
 
@@ -188,38 +188,44 @@ class StudentCompleteTest(ListView):
 @student_required
 def pass_test(request, pk):
     test = get_object_or_404(Test, pk=pk)
-    student = request.user.student
+    questions = Question.objects.filter(test__id=pk)
+    answers = Answer.objects.filter(question__test__id=pk)
+    return render(request, 'tasks/student/complete_test.html',
+                  {'test': test, 'questions': questions, 'answers': answers})
 
-    if student.test.filter(pk=pk).exists():
-        return render(request, 'tasks/student/complete_test.html')
 
-    all_questions = test.questions.count()
-    not_completed_questions = student.get_not_completed_questions(test)
-    all_not_completed_questions = not_completed_questions.count()
-    print(not_completed_questions, all_not_completed_questions)
-    result = 100 - round(((all_not_completed_questions - 1) / all_questions) * 100)
-    question = not_completed_questions.first()
-
+@login_required
+@student_required
+def pass_result(request, pk):
+    answers = Answer.objects.filter(question__test__id=pk)
+    test = get_object_or_404(Test, pk=pk)
     if request.method == 'POST':
-        pass_form = PassTestForm(question=question, data=request.POST)
-        if pass_form.is_valid():
-            with transaction.atomic():
-                student_answer = pass_form.save(commit=False)
-                student_answer.student = student
-                student_answer.save()
-                if student.get_not_completed_questions(test).exists():
-                    return redirect('pass_test', pk)
-                else:
-                    correct_answers = student.tests_answers.filter(answer__question__test=test,
-                                                                   answer__correct_answer=True).count()
-                    result = round((correct_answers / all_questions) * 100.0, 2)
-                    CompleteTest.objects.create(student=student, test=test, result=result)
-                    return redirect('test_list')
-    else:
-        pass_form = PassTestForm(question=question)
-    return render(request, 'tasks/student/complete_test.html', {
-        'test': test,
-        'question': question,
-        'pass_form': pass_form,
-        'result': result
-    })
+        data = request.POST
+        data_dict = dict(data)
+        keys = []
+        keys_answers = []
+        all_answers = []
+        result = 0
+        for key in data_dict:
+            try:
+                keys.append(int(key))
+                keys_answers.append(data_dict[key][0])
+            except:
+                print("Csrf")
+        for answer in answers:
+            if answer.correct_answer:
+                all_answers.append(answer.answer)
+        all = len(all_answers)
+        for i in range(all):
+            if all_answers[i] == keys_answers[i]:
+                result += 1
+        efficienty = (result / all) * 100
+        student = request.user.student
+        CompleteTest.objects.create(student=student, test=test, result=result)
+    return render(request,
+                  'tasks/student/result.html',
+                  {'result': result,
+                   'efficienty': efficienty,
+                   'all': all,
+
+                   })

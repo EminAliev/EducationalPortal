@@ -1,15 +1,24 @@
 {% extends 'base.html' %}
-
 {% block content %}
-    <div class="progress mb-3">
-        <div class="progress-bar" role="progressbar" aria-valuenow="{{ result }}" aria-valuemin="0"
-             aria-valuemax="100" style="width: {{ progress }}%"></div>
+    <div style="left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 150px">
+        <form action="./result" method="post">
+            <h2 class="mb-3">{{ test.name }}</h2>
+            {% for question in questions %}
+                <p class="lead">{{ question.question_text }}</p>
+                {% for answer in answers %}
+                    {% if answer.question.question_text == question.question_text %}
+                        <p><input type="radio" name="{{ answer.question.id }}" value="{{ answer.answer }}"
+                                  required="True">{{ answer.answer }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Результаты</button>
+        </form>
     </div>
-    <h2 class="mb-3">{{ test.name }}</h2>
-    <p class="lead">{{ question.question_text }}</p>
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {{ pass_form }}
-        <button type="submit" class="btn btn-primary">Далее</button>
-    </form>
 {% endblock %}

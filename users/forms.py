@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
@@ -70,3 +71,7 @@ class UserEditForm(forms.ModelForm):
 class CourseForm(forms.Form):
     """Форма для записи на курс"""
     course = forms.ModelChoiceField(queryset=Course.objects.all(), widget=forms.HiddenInput)
+
+
+class PasswordResetRequestForm(forms.Form):
+    email = forms.CharField(label=("email"), max_length=254)

@@ -2,7 +2,7 @@ from django.urls import path
 
 from tasks.views import TeacherTestView, TeacherTestChange, TeacherTestDelete, TeacherTestResult, TeacherTestCreate, \
     QuestionCreate, \
-    QuestionDelete, question_change, StudentTestView, StudentCompleteTest, pass_test
+    QuestionDelete, question_change, StudentTestView, StudentCompleteTest, pass_test, pass_result
 
 urlpatterns = [
     path('', TeacherTestView.as_view(), name='list'),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('pass/', StudentTestView.as_view(), name='test_list'),
     path('pass/task', StudentCompleteTest.as_view(), name='complete_test'),
     path('<int:pk>/pass', pass_test, name='pass_test'),
+    path('<int:pk>/result', pass_result, name='result'),
 ]

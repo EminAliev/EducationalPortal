@@ -36,14 +36,14 @@ InlineAnswerFormSet = inlineformset_factory(Question, Answer, formset=TrueAnswer
 
 
 class PassTestForm(forms.ModelForm):
-    answer = forms.ModelChoiceField(queryset=Answer.objects.none(), widget=forms.RadioSelect(), required=True,
-                                    empty_label=None)
+    answer_text = forms.ModelChoiceField(queryset=Answer.objects.none(), widget=forms.RadioSelect(), required=True,
+                                         empty_label=None)
 
     class Meta:
         model = StudentAnswerTest
-        fields = ('answer',)
+        fields = ('answer_text',)
 
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
         super().__init__(*args, **kwargs)
-        self.fields['answer'].queryset = question.answers.order_by('question')
+        self.fields['answer_text'].queryset = question.answers.order_by('question')

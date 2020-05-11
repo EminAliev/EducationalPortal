@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .views import CourseView, CourseCreateView, CourseUpdateView, CourseDeleteView, ModuleCourseCreateUpdateView, \
     ContentCancelView, ContentListView, CourseListView, \
-    CourseInView, ContentViewCreate, TaskCourse, ContactView
+    CourseInView, ContentViewCreate, ContactView
 
 urlpatterns = [
     path('list/',
@@ -41,5 +41,4 @@ urlpatterns = [
     path('<slug:slug>/',
          CourseInView.as_view(),
          name='courses_all_in'),
-    path('task/<int:pk>/', TaskCourse.as_view(), name="task_course"),
 ]

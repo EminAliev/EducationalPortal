@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from courses.models import Course, Module, Subject, Content, Task, MessagesTask, TaskRealization, Contact
+from courses.models import Course, Module, Subject, Content, Contact
 
 
 def all_fields_admin(cls, *exclude_fields):

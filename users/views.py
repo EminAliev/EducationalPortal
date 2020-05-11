@@ -3,15 +3,21 @@ from functools import wraps
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.validators import validate_email
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template import loader
 from django.urls import reverse, reverse_lazy
+from django.utils.crypto import get_random_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.views.generic import FormView, ListView, DetailView, CreateView, TemplateView
 
 from courses.models import Course
 from users.forms import LoginForm, CourseForm, ProfileEditForm, UserEditForm, StudentRegisterForm, \
-    TeacherRegisterForm
+    TeacherRegisterForm, PasswordResetRequestForm
 from users.models import User, Profile
 
 
@@ -190,3 +196,8 @@ class UserCourseInView(DetailView):
             # Получаем первый модуль
             context['module'] = course.modules.all()[0]
         return context
+
+
+
+
+

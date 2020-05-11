@@ -26,8 +26,9 @@ class Student(models.Model):
         return self.user.username
 
     def get_not_completed_questions(self, test):
-        answers = self.tests_answers.filter(answer__question__test=test).values_list('answer__question__test_id',
-                                                                                     flat=True)
+        answers = self.tests_answers.filter(answer_text__question__test=test).values_list(
+            'answer_text__question__test_id',
+            flat=True)
         questions = test.questions.exclude(pk__in=answers).order_by('question_text')
         print(questions)
         return questions
@@ -49,3 +50,4 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
+

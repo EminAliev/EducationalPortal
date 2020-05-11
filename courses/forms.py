@@ -2,18 +2,10 @@ from django import forms
 from django.forms import Textarea
 from django.forms.models import inlineformset_factory
 
-from courses.models import Course, Module, MessagesTask, Comment, Contact
+from courses.models import Course, Module, Comment, Contact
 
 """Получаем формы, когда объекты модулей, будут связаны с объектами курсов"""
 CourseModuleFormSet = inlineformset_factory(Course, Module, fields=['name', 'definition'], extra=2, can_delete=True)
-
-
-class AnswerForm(forms.ModelForm):
-    """Форма ответа на задание"""
-
-    class Meta:
-        model = MessagesTask
-        fields = ("answer",)
 
 
 class CommentForm(forms.ModelForm):
