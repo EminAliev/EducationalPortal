@@ -1,62 +1,44 @@
-"""from django.contrib import admin
-from django import forms
+from django.contrib import admin
 
-from tasks.models import Question, Answer, Test
-
-
-def all_fields_admin(cls, *exclude_fields):
-    return [field.name for field in cls._meta.fields if field.name not in exclude_fields]
+from tasks.models import Test, Question, Answer, CompleteTest, StudentAnswerTest
 
 
-class AdminQuestionForm(forms.ModelForm):
-
-    class Meta:
-        model = Question
-        fields = '__all__'
-
-    def clean(self):
-        if 'on' not in self.get_variants():
-            msg = 'Выберите верный вариант'
-            self.add_error(None, msg)
-
-        return super().clean()
-
-    def get_variants(self):
-        for k, v in self.data.items():
-            if 'is_right' in k:
-                yield v
+class QuestionInline(admin.StackedInline):
+    model = Question
 
 
-class AdminQuestion(admin.ModelAdmin):
-
-    class AnswerInline(admin.TabularInline):
-        model = Answer
-
-    form = AdminQuestionForm
-    inlines = [
-        AnswerInline,
-    ]
-    list_display = ("id", "question", "test")
-    list_display_links = ("question",)
+class AnswerInline(admin.StackedInline):
+    model = Answer
 
 
-class AdminTest(admin.ModelAdmin):
-
-    class QuestionInline(admin.TabularInline):
-        model = Question
-
-    list_display = all_fields_admin(Test)
-    inlines = [
-        QuestionInline,
-    ]
+@admin.register(Test)
+class TestAdmin(admin.ModelAdmin):
+    list_display = ['author', 'name', 'course']
+    search_fields = ['name', 'course']
+    list_filter = ['course']
+    inlines = [QuestionInline]
 
 
-class AdminAnswer(admin.ModelAdmin):
-    list_display = all_fields_admin(Answer)
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ['test', 'question_text']
+    search_fields = ['test']
+    inlines = [AnswerInline]
 
 
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer', 'correct_answer']
+    search_fields = ['answer']
 
 
-admin.site.register(Test, AdminTest)
-admin.site.register(Question, AdminQuestion)
-admin.site.register(Answer, AdminAnswer)"""
+@admin.register(CompleteTest)
+class CompleteTestAdmin(admin.ModelAdmin):
+    list_display = ['student', 'test', 'result', 'date_created']
+    search_fields = ['student', 'test']
+    list_filter = ['date_created', 'test']
+
+
+@admin.register(StudentAnswerTest)
+class StudentAnswerTestAdmin(admin.ModelAdmin):
+    list_display = ['student', 'answer_text']

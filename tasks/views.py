@@ -9,7 +9,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from django.views.generic.base import View, TemplateResponseMixin
 from functools import wraps
 
-from tasks.forms import QuestionForm, InlineAnswerFormSet, PassTestForm
+from tasks.forms import QuestionForm, InlineAnswerFormSet
 from tasks.models import Test, Question, CompleteTest, Answer
 from users.views import TeacherRequiredMixin, StudentRequiredMixin, teacher_required, student_required
 
