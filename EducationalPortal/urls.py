@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.utils.functional import curry
+from django.views.defaults import page_not_found, server_error
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from api.courses import views
-from courses.views import ContactView
+from courses.views import ContactView, error_500, error_404
 from .yasg import urlpatterns as doc_urls
 
 from api.courses.views import SubjectView, SubjectInView, CourseView
@@ -45,5 +46,8 @@ urlpatterns = [
 
 urlpatterns += doc_urls
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL,
+                      document_root=settings.MEDIA_ROOT)
+
+handler404 = error_404
+handler500 = error_500

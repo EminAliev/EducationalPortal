@@ -198,13 +198,8 @@ class CourseInView(FormMixin, DetailView):
         return super().form_valid(form)
 
 
-def send(email):
-    send_mail('Вы подписались на рассылку', 'Наш сайт будет вас уведомлять о новых курсов и фичах сайта',
-              'educationalplatform11@gmail.com', [email],
-              fail_silently=False)
-
-
 class ContactView(CreateView):
+    """Отображение формы, предназначенная для рассылки пользователей"""
     model = Contact
     form_class = ContactForm
     success_url = '/'
@@ -215,3 +210,11 @@ class ContactView(CreateView):
         # send(form.instance.email)
         send_spam_email.delay(form.instance.email)
         return super().form_valid(form)
+
+
+def error_404(request, exception):
+    return render(request, 'errors/404.html')
+
+
+def error_500(request):
+    return render(request, 'errors/500.html')
