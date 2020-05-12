@@ -164,6 +164,7 @@ class QuestionDelete(TeacherRequiredMixin, LoginRequiredMixin, DeleteView):
 
 
 class StudentTestView(StudentRequiredMixin, LoginRequiredMixin, ListView):
+    """Отображение всех тестов"""
     model = Test
     ordering = ('name',)
     context_object_name = 'test'
@@ -175,6 +176,7 @@ class StudentTestView(StudentRequiredMixin, LoginRequiredMixin, ListView):
 
 
 class StudentCompleteTest(ListView):
+    """Отображние сделанных тестов"""
     model = CompleteTest
     context_object_name = 'complete_test'
     template_name = 'tasks/student/all_complete_test.html'
@@ -187,6 +189,7 @@ class StudentCompleteTest(ListView):
 @login_required
 @student_required
 def pass_test(request, pk):
+    """Решение теста"""
     test = get_object_or_404(Test, pk=pk)
     questions = Question.objects.filter(test__id=pk)
     answers = Answer.objects.filter(question__test__id=pk)
@@ -197,6 +200,7 @@ def pass_test(request, pk):
 @login_required
 @student_required
 def pass_result(request, pk):
+    """Результаты теста"""
     answers = Answer.objects.filter(question__test__id=pk)
     test = get_object_or_404(Test, pk=pk)
     if request.method == 'POST':
