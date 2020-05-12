@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from users.models import User, Profile, Student
+from users.models import User, Profile, Student, Token
 
 
 @admin.register(User)
@@ -23,3 +23,9 @@ class StudentAdmin(admin.ModelAdmin):
     """Админка студента"""
     list_display = ['user', ]
     search_fields = ['user']
+
+
+@admin.register(Token)
+class TokenAdmin(admin.ModelAdmin):
+    """Админка для токенов"""
+    list_display = ['user', 'token']

@@ -75,8 +75,10 @@ class CourseForm(forms.Form):
 
 
 class PasswordResetRequestForm(forms.Form):
-    email = forms.CharField(label=("email"), max_length=254)
+    """Форма для сброса пароля(email)"""
+    email = forms.CharField(label=("Email"), max_length=254)
 
 
 class PasswordResetForm(forms.Form):
-    password = CharField(label="New Password", max_length=254, widget=PasswordInput())
+    """Форма для нового пароля"""
+    password = CharField(label="Новый пароль", max_length=254, widget=PasswordInput())

@@ -195,6 +195,7 @@ class UserCourseInView(DetailView):
 
 
 class ResetPasswordRequestView(FormView):
+    """Запрос для сброса пароля(формирование ссылки)"""
     template_name = 'users/auth/reset.html'
     form_class = PasswordResetRequestForm
     success_url = reverse_lazy('check_email')
@@ -213,6 +214,8 @@ class ResetPasswordRequestView(FormView):
 
 
 class UserResetPasswordAccessMixin(AccessMixin):
+    """Обработка ссылки для сброса пароля"""
+
     def dispatch(self, request, *args, **kwargs):
         username = kwargs['username']
         user = User.objects.get(username=username)
@@ -225,6 +228,7 @@ class UserResetPasswordAccessMixin(AccessMixin):
 
 
 class ResetPasswordView(UserResetPasswordAccessMixin, FormView):
+    """Создание нового пароля"""
     form_class = PasswordResetForm
     template_name = 'users/auth/confirm.html'
     success_url = reverse_lazy('login')
@@ -244,4 +248,5 @@ class ResetPasswordView(UserResetPasswordAccessMixin, FormView):
 
 
 class CheckEmailView(TemplateView):
+    """Отображение инструкции для сброса пароля"""
     template_name = 'users/auth/ready.html'
