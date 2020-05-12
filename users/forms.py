@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
+from django.forms import CharField, PasswordInput
 
 from courses.models import Course
 from users.models import User, Profile, Student
@@ -75,3 +76,7 @@ class CourseForm(forms.Form):
 
 class PasswordResetRequestForm(forms.Form):
     email = forms.CharField(label=("email"), max_length=254)
+
+
+class PasswordResetForm(forms.Form):
+    password = CharField(label="New Password", max_length=254, widget=PasswordInput())

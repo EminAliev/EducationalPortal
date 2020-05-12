@@ -3,7 +3,8 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
 from django.urls import path
 
 from users.views import login_view, logout_view, UserEntryToCourseView, UserCourseView, UserCourseInView, \
-    edit, ProfileView, RegisterView, StudentRegister, TeacherRegister
+    edit, ProfileView, RegisterView, StudentRegister, TeacherRegister, ResetPasswordRequestView, ResetPasswordView, \
+    CheckEmailView
 
 urlpatterns = [
     path('signIn/', login_view, name='login'),
@@ -11,12 +12,9 @@ urlpatterns = [
     path('signUp/', RegisterView.as_view(), name='register'),
     path('signUp/student/', StudentRegister.as_view(), name='register_student'),
     path('signUp/teacher/', TeacherRegister.as_view(), name='register_teacher'),
-    path('reset/', PasswordResetView.as_view(template_name='users/auth/reset.html'), name='reset'),
-    path('reset/ready/', PasswordResetDoneView.as_view(template_name='users/auth/ready.html'), name='ready'),
-    path('reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name='users/auth/confirm.html'),
-         name='confirm'),
-    path('reset/complete/', PasswordResetCompleteView.as_view(template_name='users/auth/complete.html'),
-         name='complete'),
+    path('reset/', ResetPasswordRequestView.as_view(), name='reset_request_user'),
+    path('reset/<username>/<token>', ResetPasswordView.as_view(), name='reset'),
+    path('reset/ready/', CheckEmailView.as_view(), name='check_email'),
     path('profile/', ProfileView.as_view(), name="profile"),
     path('edit/', edit, name='edit'),
     path('entry-course/', UserEntryToCourseView.as_view(), name='users_entry_course'),

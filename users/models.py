@@ -46,3 +46,13 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профили'
+
+
+class Token(models.Model):
+    """Класс модели токена для сброса пароля"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    token = models.CharField(max_length=150, verbose_name='Токен')
+
+    class Meta:
+        verbose_name = 'Токен'
+        verbose_name_plural = 'Токены'

@@ -2,23 +2,19 @@ from functools import wraps
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.core.validators import validate_email
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template import loader
 from django.urls import reverse, reverse_lazy
-from django.utils.crypto import get_random_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 from django.views.generic import FormView, ListView, DetailView, CreateView, TemplateView
 
 from courses.models import Course
 from users.forms import LoginForm, CourseForm, ProfileEditForm, UserEditForm, StudentRegisterForm, \
-    TeacherRegisterForm, PasswordResetRequestForm
-from users.models import User, Profile
+    TeacherRegisterForm, PasswordResetRequestForm, PasswordResetForm
+from users.models import User, Profile, Token
+from users.tasks import send_email_password
 
 
 def teacher_required(f):
@@ -198,6 +194,54 @@ class UserCourseInView(DetailView):
         return context
 
 
+class ResetPasswordRequestView(FormView):
+    template_name = 'users/auth/reset.html'
+    form_class = PasswordResetRequestForm
+    success_url = reverse_lazy('check_email')
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data["email"]
+            user = User.objects.get(email=data)
+            new_token = default_token_generator.make_token(user)
+            Token.objects.create(user=user, token=new_token)
+            link = str('http://localhost:8000') + reverse('reset',
+                                                          kwargs={'username': user.username, 'token': new_token})
+            send_email_password.delay('Пройдите по ссылке, чтобы создать новый пароль: ' + link, user.email)
+        return self.form_valid(form)
 
 
+class UserResetPasswordAccessMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        username = kwargs['username']
+        user = User.objects.get(username=username)
+        token = kwargs['token']
+        try:
+            Token.objects.get(user=user, token=token)
+        except Token.DoesNotExist:
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
+
+class ResetPasswordView(UserResetPasswordAccessMixin, FormView):
+    form_class = PasswordResetForm
+    template_name = 'users/auth/confirm.html'
+    success_url = reverse_lazy('login')
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data["password"]
+            username = kwargs['username']
+            token = kwargs['token']
+            token_on_user = Token.objects.get(user__username=username, token=token)
+            user = token_on_user.user
+            user.set_password(data)
+            user.save()
+            token_on_user.delete()
+        return self.form_valid(form)
+
+
+class CheckEmailView(TemplateView):
+    template_name = 'users/auth/ready.html'

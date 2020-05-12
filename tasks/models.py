@@ -59,7 +59,8 @@ class CompleteTest(models.Model):
 class StudentAnswerTest(models.Model):
     """Класс модели ответа студента"""
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='tests_answers', verbose_name='Студент')
-    answer_text = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_student', verbose_name='Ответ студента')
+    answer_text = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_student',
+                                    verbose_name='Ответ студента')
 
     class Meta:
         verbose_name = 'Результат студента'

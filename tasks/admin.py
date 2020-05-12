@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from tasks.models import Test, Question, Answer, CompleteTest, StudentAnswerTest
-from users.models import Student
 
 
 class QuestionInline(admin.StackedInline):
