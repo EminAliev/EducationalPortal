@@ -1,16 +1,18 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
-from courses.models import Course, Module, Subject, Content, Contact
-
-
-def all_fields_admin(cls, *exclude_fields):
-    """Забирает все поля для list_display"""
-    return [field.name for field in cls._meta.fields if field.name not in exclude_fields]
+from courses.models import Course, Module, Subject, Content, Contact, Comment
 
 
 class ModuleInline(admin.StackedInline):
     model = Module
+
+
+class ContentInline(admin.StackedInline):
+    model = Content
+
+
+class CommentInline(admin.StackedInline):
+    model = Comment
 
 
 @admin.register(Course)
@@ -20,7 +22,7 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ['name', 'view']
     list_filter = ['date_created', 'subject']
     prepopulated_fields = {'slug': ('name',)}
-    inlines = [ModuleInline]
+    inlines = [ModuleInline, CommentInline]
 
 
 @admin.register(Subject)
@@ -30,49 +32,30 @@ class SubjectAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+@admin.register(Module)
+class ModuleAdmin(admin.ModelAdmin):
+    """Админка модулей"""
+    list_display = ['course', 'name', 'definition']
+    search_fields = ['name']
+    list_filter = ['course']
+    inlines = [ContentInline]
+
+
+@admin.register(Content)
+class ContentAdmin(admin.ModelAdmin):
+    """Админка содержимого"""
+    list_display = ['module', 'type']
+    search_fields = ['type']
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    """Админка отзывов(комментариев)"""
+    list_display = ['course', 'user', 'text', 'created']
+    search_fields = ['text', 'created']
+
+
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     """Админка подписки"""
     list_display = ('name', 'email')
-
-
-"""class TaskAdmin(admin.ModelAdmin):
-    list_display = all_fields_admin(Task, 'id', 'description')
-    list_display_links = ("name",)
-    actions = ['show_task']
-
-    def show_task(self, request, queryset):
-        queryset.update(active=True)
-
-    show_task.short_description = "Вывести задание"
-
-
-class RealizationTaskAdmin(admin.ModelAdmin):
-
-    class MessagesTaskAdmin(admin.TabularInline):
-        model = MessagesTask
-
-    inlines = [
-        MessagesTaskAdmin,
-    ]
-
-    list_display = ("id", "student", "task", "success", "date_create")
-    list_filter = ("task__name", "student__username", "date_create")
-    list_editable = ("success",)
-    readonly_fields = ('answer',)
-    list_display_links = ("student",)
-
-    def answer(self, obj):
-        return mark_safe("{}|safe".format(obj.answer))
-
-
-class MessagesTaskAdmin(admin.ModelAdmin):
-    list_display = ("user", "task_realization", "date_created")
-
-
-
-
-admin.site.register(Content)
-admin.site.register(Task, TaskAdmin)
-admin.site.register(TaskRealization, RealizationTaskAdmin)
-admin.site.register(MessagesTask, MessagesTaskAdmin)"""
