@@ -19,8 +19,12 @@ class User(AbstractUser):
 
 class Student(models.Model):
     """Класс модели студента"""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    test = models.ManyToManyField("tasks.Test")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, verbose_name='Пользователь')
+    test = models.ManyToManyField("tasks.Test", verbose_name='Тесты')
+
+    class Meta:
+        verbose_name = 'Студент'
+        verbose_name_plural = 'Студенты'
 
     def __str__(self):
         return self.user.username
