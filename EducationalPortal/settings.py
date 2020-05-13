@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's+g4ycfmw0z)o^t2lh=rcx#9ed_2&b!2oqd1o%l+=m%wkk+2p='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -105,6 +105,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+import dj_database_url
+
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
