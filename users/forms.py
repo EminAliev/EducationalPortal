@@ -9,15 +9,17 @@ from users.models import User, Profile, Student
 
 
 class StudentRegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
         super(StudentRegisterForm, self).__init__(*args, **kwargs)
 
-        for fieldname in ['username', 'password1', 'password2']:
+        for fieldname in ['username', 'password1', 'password2', 'first_name', 'last_name']:
             self.fields[fieldname].help_text = None
 
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ("username", "email", "first_name", "last_name", "password1", "password2")
 
     @transaction.atomic
     def save(self):
@@ -29,18 +31,21 @@ class StudentRegisterForm(UserCreationForm):
 
 
 class TeacherRegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
         super(TeacherRegisterForm, self).__init__(*args, **kwargs)
 
-        for fieldname in ['username', 'password1', 'password2']:
+        for fieldname in ['username', 'password1', 'password2', 'first_name', 'last_name']:
             self.fields[fieldname].help_text = None
 
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ("username", "email", "first_name", "last_name", "password1", "password2")
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
         user.is_teacher = True
         if commit:
             user.save()
