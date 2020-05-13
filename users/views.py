@@ -63,7 +63,7 @@ def login_view(request):
                 password=form.cleaned_data["password"])
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect('/course')
+                return redirect('courses_all')
             else:
                 return render(
                     request, "users/auth/signIn.html",
@@ -84,7 +84,7 @@ class RegisterView(TemplateView):
 def logout_view(request):
     """Выход из системы"""
     logout(request)
-    return HttpResponseRedirect("/auth/signIn")
+    return redirect('index')
 
 
 class StudentRegister(CreateView):

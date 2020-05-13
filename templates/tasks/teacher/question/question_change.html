@@ -11,13 +11,13 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-8">
-                        <strong>Answers</strong>
+                        <strong>Ответы</strong>
                     </div>
                     <div class="col-2">
-                        <strong>Correct?</strong>
+                        <strong>Правильный ответ</strong>
                     </div>
                     <div class="col-2">
-                        <strong>Delete?</strong>
+                        <strong>Удаление</strong>
                     </div>
                 </div>
             </div>
@@ -32,8 +32,8 @@
                                 {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                                 {{ form.answer }}
                                 {% if form.instance.pk and form.answer.value != form.instance.answer %}
-                                    <p class="mb-0 mt-1"><small class="text-muted font-italic"><strong>Old
-                                        answer:</strong> {{ form.instance.answer }}</small></p>{% endif %}
+                                    <p class="mb-0 mt-1"><small class="text-muted font-italic"><strong>Старый
+                                        ответ:</strong> {{ form.instance.answer }}</small></p>{% endif %}
                             </div>
                             <div class="col-2">
                                 {{ form.correct_answer }}
@@ -48,12 +48,8 @@
                 {% endfor %}
             </div>
         </div>
-        <p>
-            <small class="form-text text-muted">Your question may have at least <strong>2</strong> answers and maximum
-                <strong>10</strong> answers. Select at least one correct answer.</small>
-        </p>
-        <button type="submit" class="btn btn-success">Save changes</button>
-        <a href="{% url 'test_change' test.pk %}" class="btn btn-outline-secondary" role="button">Nevermind</a>
-        <a href="{% url 'question_delete' test.pk question.pk %}" class="btn btn-danger float-right">Delete</a>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a href="{% url 'test_change' test.pk %}" class="btn btn-outline-secondary" role="button">Отмена</a>
+        <a href="{% url 'question_delete' test.pk question.pk %}" class="btn btn-danger float-right">Удалить</a>
     </form>
 {% endblock %}

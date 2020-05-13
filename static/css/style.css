@@ -171,7 +171,7 @@ select {
 
 input[type=submit], a.button {
     border-radius: 5px;
-    background: #4dcc43;
+    background: black;
     color: #fff;
     font-size: 16px;
     text-transform: uppercase;
@@ -181,13 +181,13 @@ input[type=submit], a.button {
 }
 
 a.secondary-button {
-    border: 3px solid #4dcc43;
+    border: 3px solid black;
     padding: 10px 20px;
     margin: 10px 0;
 }
 
 input[type=submit]:hover, a.button:hover {
-    background: #3fad37;
+    background: black;
 }
 
 ul#course-modules {

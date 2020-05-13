@@ -3,45 +3,6 @@
 {% block title %}
     Модуль {{ module.sort|add:1 }}: {{ module.name }}
 {% endblock %}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#modules').sortable({
-            stop: function (event, ui) {
-                modules_sort = {};
-                $('#modules').children().each(function () {
-                    $(this).find('.order').text($(this).index() + 1);
-                    modules_sort[$(this).data('id')] = $(this).index();
-                });
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "sort_modules" %}',
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    data: JSON.stringify(modules_sort)
-                });
-            }
-        });
-
-        $('#module-contents').sortable({
-            stop: function (event, ui) {
-                contents_sort = {};
-                $('#module-contents').children().each(function () {
-                    contents_sort[$(this).data('id')] = $(this).index();
-                });
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "sort_content" %}',
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    data: JSON.stringify(contents_sort),
-                });
-            }
-        });
-    });
-</script>
-
-
 {% block content %}
     {% with course=module.course %}
         <h1>Курс "{{ course.name }}"</h1>

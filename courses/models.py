@@ -34,7 +34,6 @@ class Course(models.Model):
     view = models.TextField(verbose_name='Описание курса')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания курса')
     followers = models.ManyToManyField(User, related_name='courses_joined', blank=True, verbose_name='Учащиеся курса')
-    counter_tasks = models.PositiveIntegerField('Количество заданий', default=0)
 
     class Meta:
         verbose_name = 'Курс'
