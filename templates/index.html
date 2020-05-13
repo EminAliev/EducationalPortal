@@ -121,18 +121,18 @@
             <div class="row">
                 <div class="col-md-4 mb-5">
                     <i class="fa fa-comment-medical fa-4x grey-text"></i>
-                    <h4 class="my-4 font-weight-bold">Предложения</h4>
-                    <p class="grey-text">Возможность оставлять предложения по улучшению школы</p>
+                    <h4 class="my-4 font-weight-bold">Тесты</h4>
+                    <p class="grey-text">Возможность решать, создавать тесты</p>
                 </div>
                 <div class="col-md-4 mb-5">
                     <i class="fa fa-newspaper fa-4x grey-text"></i>
-                    <h4 class="my-4 font-weight-bold">Курсы</h4>
+                    <h4 class="my-4 font-weight-bold">Знания</h4>
                     <p class="grey-text">Возможность получить новые знания</p>
                 </div>
                 <div class="col-md-4 mb-5">
                     <i class="fa fa-table fa-4x grey-text"></i>
-                    <h4 class="my-4 font-weight-bold">Расписание</h4>
-                    <p class="grey-text">Возможность посмотреть свое расписание</p>
+                    <h4 class="my-4 font-weight-bold">Курсы</h4>
+                    <p class="grey-text">Возможность создавать свои курсы для студентов</p>
                 </div>
             </div>
         </section>
@@ -195,10 +195,10 @@
                     </div>
                 </div>
             </div>
-            <big class="font-weight-bold ">Перейти к всем статьям</big>
+            <big class="font-weight-bold ">Перейти к всем курсам</big>
             <form>
                 <input type="button" class="btn btn-primary btn-lg" value="Перейти"
-                       onClick='location.href="posts.html"'>
+                       onClick='location.href="{% url 'courses_all' %}"'>
             </form>
         </section>
     </div>
