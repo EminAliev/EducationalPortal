@@ -158,7 +158,6 @@ class Comment(models.Model):
 
 class Contact(models.Model):
     """Класс модели подписки по email"""
-    name = models.CharField(max_length=30, verbose_name='Имя')
     email = models.CharField(max_length=50, verbose_name='Email')
 
     class Meta:
@@ -166,4 +165,4 @@ class Contact(models.Model):
         verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        return self.name
+        return self.email

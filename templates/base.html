@@ -17,17 +17,35 @@
         <div class="collapse navbar-collapse" id="navbarcollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a href="#" class="nav-link">Главная</a></li>
-                <li class="nav-item dropdown dropdown-sm"><a href="#" class="nav-link dropdown-toggle" id="blogdropdown"
-                                                             data-toggle="dropdown">Статьи</a>
-                </li>
-                <li class="nav-item"><a href="{% url "course_list" %}" class="nav-link" data-toggle="modal"
-                                        data-target="#myModal2" role="button">Курсы</a></li>
+                {% if request.user.is_student %}
+                    <li class="nav-item"><a href="{% url 'courses_all' %}"
+                                            class="nav-link">Все курсы</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'users_list_courses' %}"
+                                            class="nav-link">Мои курсы</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'test_list' %}"
+                                            class="nav-link">Все тесты</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'complete_test' %}"
+                                            class="nav-link">Выполненные тесты</a>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item"><a href="{% url 'courses_all' %}"
+                                            class="nav-link">Все Курсы</a>
+                    <li class="nav-item"><a href="{% url 'course_list' %}"
+                                            class="nav-link">Мои курсы</a>
+                    <li class="nav-item"><a href="{% url 'list' %}"
+                                            class="nav-link">Тесты</a>
+                    </li>
+                {% endif %}
             </ul>
             <div class="collapse navbar-collapse justify-content-end" id="basicExampleNav">
                 <ul class="navbar-nav">
                     {% if request.user.is_authenticated %}
                         <li class="nav-item">
-                            <a href="{% url "register" %}" class="nav-link waves-effect waves-light">Мой профиль</a>
+                            <a href="{% url "profile" %}" class="nav-link waves-effect waves-light">Мой профиль</a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url "logout" %}" class="nav-link waves-effect waves-light">Выйти</a>
@@ -56,6 +74,23 @@
         {% endblock %}
     });
 </script>
+
+<div class="wrapper">
+    <div class="content">
+        <div class="footer">
+                <div class="row">
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <p class="copyright-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright
+                            &copy; 2020
+                            <a href="/">Educational Platform</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script type="text/javascript" src="{% static "js/jquery-3.4.1.min.js" %}"></script>

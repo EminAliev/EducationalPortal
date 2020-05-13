@@ -58,4 +58,4 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     """Админка подписки"""
-    list_display = ('name', 'email')
+    list_display = ('email',)

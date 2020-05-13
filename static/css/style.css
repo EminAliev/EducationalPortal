@@ -324,7 +324,7 @@ body {
     position: absolute;
     width: 1000px;
     margin-top: 0%;
-    top: 100px
+    top: 100px;
 }
 
 .row_task {
@@ -333,5 +333,37 @@ body {
     position: absolute;
     width: 1000px;
     margin-top: 0%;
-    top: 850px
+    top: 850px;
+}
+
+.register {
+    left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 150px
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+html,
+body {
+	height: 100%;
+}
+.wrapper {
+	position: relative;
+	min-height: 100%;
+}
+.content {
+	padding-bottom: 90px;
+}
+.footer {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 80px;
 }
