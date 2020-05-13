@@ -53,17 +53,17 @@ class CourseView(UserCourseMixin, ListView):
     template_name = 'courses/control/list_courses.html'
 
 
-class CourseCreateView(TeacherRequiredMixin, PermissionRequiredMixin, UserCourseEditMixin, CreateView):
+class CourseCreateView(TeacherRequiredMixin, UserCourseEditMixin, CreateView):
     """Создание нового курса"""
     permission_required = 'courses.add_course'
 
 
-class CourseUpdateView(TeacherRequiredMixin, PermissionRequiredMixin, UserCourseEditMixin, UpdateView):
+class CourseUpdateView(TeacherRequiredMixin, UserCourseEditMixin, UpdateView):
     """Изменение курса"""
     permission_required = 'courses.change_course'
 
 
-class CourseDeleteView(TeacherRequiredMixin, PermissionRequiredMixin, UserCourseMixin, DeleteView):
+class CourseDeleteView(TeacherRequiredMixin, UserCourseMixin, DeleteView):
     """Удаление курса"""
     template_name = "courses/control/delete_course.html"
     success_url = reverse_lazy('course_list')
