@@ -17,6 +17,7 @@ from courses.forms import CourseModuleFormSet, CommentForm, ContactForm
 from courses.models import Course, Module, Content, Subject, Comment, Contact
 from courses.tasks import send_spam_email
 from users.forms import CourseForm
+from users.views import TeacherRequiredMixin
 
 
 class UserMixin(object):
@@ -52,17 +53,17 @@ class CourseView(UserCourseMixin, ListView):
     template_name = 'courses/control/list_courses.html'
 
 
-class CourseCreateView(PermissionRequiredMixin, UserCourseEditMixin, CreateView):
+class CourseCreateView(TeacherRequiredMixin, PermissionRequiredMixin, UserCourseEditMixin, CreateView):
     """Создание нового курса"""
     permission_required = 'courses.add_course'
 
 
-class CourseUpdateView(PermissionRequiredMixin, UserCourseEditMixin, UpdateView):
+class CourseUpdateView(TeacherRequiredMixin, PermissionRequiredMixin, UserCourseEditMixin, UpdateView):
     """Изменение курса"""
     permission_required = 'courses.change_course'
 
 
-class CourseDeleteView(PermissionRequiredMixin, UserCourseMixin, DeleteView):
+class CourseDeleteView(TeacherRequiredMixin, PermissionRequiredMixin, UserCourseMixin, DeleteView):
     """Удаление курса"""
     template_name = "courses/control/delete_course.html"
     success_url = reverse_lazy('course_list')
