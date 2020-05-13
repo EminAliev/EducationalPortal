@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2 style="text-align: center" class="mb-3">
+        {{ test.name }}
+    </h2>
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-10">
+                    <strong>Вопросы</strong>
+                </div>
+                <div class="col-2">
+                    <strong>Ответы</strong>
+                </div>
+            </div>
+        </div>
+        <div class="list-group list-group-flush list-group-formset">
+            {% for question in questions %}
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-10">
+                            <a href="">{{ question.question_text }}</a>
+                        </div>
+                        <div class="col-2">
+                            {{ question.answers_count }}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="list-group-item text-center">
+                    <p class="text-muted font-italic mb-0">У вас нет вопросов <a
+                            href="">добавьте новые вопросы</a>.</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'question_create' test.pk %}" class="btn btn-primary btn-sm">Добавить вопрос</a>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div style="margin:0 25% 0 25%;
+  width:50%; top: 50px; left: 15%"  class="col-md-6 col-sm-8 col-12">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form }}
+                <button style="top: 200px; left: -40%" type="submit" class="btn btn-success">Сохранить</button>
+                <a style="top: 200px; left: -35%" href="{% url 'list' %}" class="btn btn-outline-secondary" role="button">Отмена</a>
+                <a style="top: 89px; left: -45%" href="{% url 'test_delete' test.pk %}" class="btn btn-danger float-right">Удалить</a>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

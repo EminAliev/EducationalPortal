@@ -1,0 +1,88 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>{% block title %}Educational Platform{% endblock %}</title>
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/mdb.min.css" %}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <a href="/" class="navbar-brand">EP</a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarcollapse"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarcollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a href="#" class="nav-link">Главная</a></li>
+                {% if request.user.is_student %}
+                    <li class="nav-item"><a href="{% url 'courses_all' %}"
+                                            class="nav-link">Все курсы</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'users_list_courses' %}"
+                                            class="nav-link">Мои курсы</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'test_list' %}"
+                                            class="nav-link">Все тесты</a>
+                    </li>
+                    <li class="nav-item"><a href="{% url 'complete_test' %}"
+                                            class="nav-link">Выполненные тесты</a>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item"><a href="{% url 'courses_all' %}"
+                                            class="nav-link">Все Курсы</a>
+                    <li class="nav-item"><a href="{% url 'course_list' %}"
+                                            class="nav-link">Мои курсы</a>
+                    <li class="nav-item"><a href="{% url 'list' %}"
+                                            class="nav-link">Тесты</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <div class="collapse navbar-collapse justify-content-end" id="basicExampleNav">
+                <ul class="navbar-nav">
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a href="{% url "profile" %}" class="nav-link waves-effect waves-light">Мой профиль</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "logout" %}" class="nav-link waves-effect waves-light">Выйти</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{% url "register" %}" class="nav-link waves-effect waves-light">Регистрация</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "login" %}" class="nav-link waves-effect waves-light">Войти</a>
+                        </li>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script>
+    $(document).ready(function () {
+        {% block ajax_request %}
+        {% endblock %}
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="{% static "js/jquery-3.4.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/popper.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/mdb.min.js" %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</body>
+</html>

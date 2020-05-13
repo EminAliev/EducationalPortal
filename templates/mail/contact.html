@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div style=" left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 150px" class="contact">
+        <form action="{% url 'contact' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+    </div>
+{% endblock %}

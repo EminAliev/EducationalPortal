@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <h2 class="mb-3">Удалить вопрос</h2>
+    <p class="lead">Вы уверены, что хотите удалить вопрос <strong>"{{ question.question_text }}"</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-lg">Удалить</button>
+        <a href="{% url 'question_change' test.pk question.pk %}" class="btn btn-outline-secondary btn-lg"
+           role="button">Отмена</a>
+    </form>
+{% endblock %}

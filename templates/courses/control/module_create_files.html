@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}
+    {% if object %}
+        Изменить содержимое "{{ object.name }}"
+    {% else %}
+        Добавить содержимое
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <h1>
+        {% if object %}
+            Изменить содержимое "{{ object.name }}"
+        {% else %}
+            Добавить содержимое
+        {% endif %}
+    </h1>
+    <div style="left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 150px" class="module">
+        <h2>Информация о курсе</h2>
+        <form action="" method="post" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Сохранить"></p>
+        </form>
+    </div>
+{% endblock %}

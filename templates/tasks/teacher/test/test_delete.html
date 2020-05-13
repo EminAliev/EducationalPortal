@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 style="text-align: center" class="mb-3">Удалить тест</h2>
+    <p class="lead">Подтвердите, что удаляете тест <strong>"{{ test.name }}"</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-lg">Да</button>
+        <a href="{% url 'test_change' test.pk %}" class="btn btn-outline-secondary btn-lg" role="button">Отмена</a>
+    </form>
+{% endblock %}

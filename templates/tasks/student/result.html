@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 100px" class="row">
+        <div class="col-xs-12">
+            <h3 class="center">
+                Ваш результат: {{ result }} / {{ all }}
+            </h3>
+        </div>
+    </div>
+    <div style="left: 50%;
+    margin-left: -150px;
+    position: absolute;
+    width: 1000px;
+    margin-top: 0%;
+    top: 150px" class="row">
+        <div class="col-xs-12">
+            <h3 class="center"{% if efficienty < 50.0 %} style="color:red"{% else %} style="color:green"{% endif %}>
+                Результат теста: {{ efficienty }} %
+            </h3>
+        </div>
+    </div>
+{% endblock %}

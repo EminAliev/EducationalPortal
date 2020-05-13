@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 style="text-align: center" class="mb-3">Мои тесты</h2>
+    <a href="{% url 'test_create' %}" style="position: relative;
+left: 50%;
+transform: translate(-50%, 0); " class="btn btn-primary mb-3" role="button">Создать тест</a>
+    <div class="card">
+        <table class="table mb-0">
+            <thead>
+            <tr>
+                <th>Тест</th>
+                <th>Курс</th>
+                <th>Вопросы</th>
+                <th>Количество выполнивших</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for t in test %}
+                <tr>
+                    <td class="align-middle"><a href="{% url 'test_change' t.pk %}">{{ t.name }}</a></td>
+                    <td class="align-middle">{{ t.course.name }}</td>
+                    <td class="align-middle">{{ t.questions_count }}</td>
+                    <td class="align-middle">{{ t.taken_count }}</td>
+                    <td class="text-right">
+                        <a href="{% url 'test_result' t.pk %}" class="btn btn-primary">Результаты</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="bg-light text-center font-italic" colspan="5">Ни одного созданного теста</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

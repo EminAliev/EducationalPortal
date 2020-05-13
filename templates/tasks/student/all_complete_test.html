@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card">
+        <table class="table mb-0">
+            <thead>
+            <tr>
+                <th>Тест</th>
+                <th>Курс</th>
+                <th>Результат</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c_t in complete_test %}
+                <tr>
+                    <td>{{ c_t.test.name }}</td>
+                    <td>{{ c_t.test.course.name }}</td>
+                    <td>{{ c_t.result }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="bg-light text-center font-italic" colspan="3">У вас нет завершенных тестов</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

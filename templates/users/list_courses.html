@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Мои курсы{% endblock %}
+{% block content %}
+    <h1>Мои курсы</h1>
+    <div class="module">
+        {% for course in object_list %}
+            <div class="course-info">
+                <h3>{{ course.name }}</h3>
+                <p><a href="{% url "users_course_in" course.id %}">
+                    Доступные модули</a></p>
+            </div>
+        {% empty %}
+            <p>
+                Вы не зарегистрировались ни на один курс.
+                <a href="{% url "courses_all" %}">Посмотри курсы</a>
+                и зарегистрируйтесь
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

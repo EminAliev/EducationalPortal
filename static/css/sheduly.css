@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Istok+Web&display=swap');
+
+
+.vetalign {
+    writing-mode: vertical-rl;
+}
+.bgcfon {
+    background-color: #d6eaf8;
+}
+#table1 {
+    display: table;
+}
+body {
+	font-family: 'Istok Web', sans-serif;
+
+}

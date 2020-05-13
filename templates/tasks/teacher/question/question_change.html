@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <h2 class="mb-3">{{ question.question_text }}</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ answer_formset.management_form }}
+        {{ question_form }}
+        <div class="card mb-3{% if answer_formset.errors %} border-danger{% endif %}">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                        <strong>Ответы</strong>
+                    </div>
+                    <div class="col-2">
+                        <strong>Правильный ответ</strong>
+                    </div>
+                    <div class="col-2">
+                        <strong>Удаление</strong>
+                    </div>
+                </div>
+            </div>
+            {% for error in answer_formset.non_form_errors %}
+                <div class="card-body bg-danger border-danger text-white py-2">{{ error }}</div>
+            {% endfor %}
+            <div class="list-group list-group-flush list-group-formset">
+                {% for form in answer_formset %}
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-8">
+                                {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                                {{ form.answer }}
+                                {% if form.instance.pk and form.answer.value != form.instance.answer %}
+                                    <p class="mb-0 mt-1"><small class="text-muted font-italic"><strong>Старый
+                                        ответ:</strong> {{ form.instance.answer }}</small></p>{% endif %}
+                            </div>
+                            <div class="col-2">
+                                {{ form.correct_answer }}
+                            </div>
+                            <div class="col-2">
+                                {% if form.instance.pk %}
+                                    {{ form.DELETE }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a href="{% url 'test_change' test.pk %}" class="btn btn-outline-secondary" role="button">Отмена</a>
+        <a href="{% url 'question_delete' test.pk question.pk %}" class="btn btn-danger float-right">Удалить</a>
+    </form>
+{% endblock %}

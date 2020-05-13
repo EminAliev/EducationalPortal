@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ object.name }}
+{% endblock %}
+{% block content %}
+    {% with subject=course.subject %}
+        <h1>
+            {{ object.name }}
+        </h1>
+        <div class="module">
+            <h2>О курсе</h2>
+            <p>
+                <a href="{% url "courses_all_subject" subject.slug %}">
+                    {{ subject.name }}</a>.
+                {{ course.modules.count }} модуля.
+                Преподаватель: {{ course.user.get_full_name }}
+            </p>
+            {{ object.view|linebreaks }}
+            {% if request.user.is_authenticated %}
+                <form action="{% url "users_entry_course" %}" method="post">
+                    {{ course_form }}
+                    {% csrf_token %}
+                    <input type="submit" class="button" value="Зарегистрироваться на курс">
+                </form>
+            {% else %}
+                <a href="{% url "register" %}" class="button">
+                    Зарегистрируйтесь на сайте
+                </a>
+            {% endif %}
+            <p>Отзывы</p>
+
+            <hr>
+            <ul>
+                {% for comment in comments %}
+                    <li>
+                        Дата: {{ comment.created }}
+                        Пользователь: {{ comment.user.get_full_name }}
+                        Отзыв: {{ comment.text }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <p>Добавить отзыв</p>
+            <div>
+                <form action="" id="add_form" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </form>
+                <button style="margin-top: 40px" form="add_form" type="submit" class="btn btn-primary">Добавить
+                </button>
+            </div>
+
+        </div>
+    {% endwith %}
+{% endblock %}

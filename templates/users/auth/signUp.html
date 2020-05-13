@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="register">
+        <h2>Регистрация {{ user_type }}</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {{ form }}
+            <button style="position: relative;
+left: -20%; top: 250px;
+transform: translate(-50%, 0); " type="submit" class="btn btn-success">Зарегистироваться
+            </button>
+        </form>
+    </div>
+{% endblock %}
