@@ -99,6 +99,7 @@ class StudentRegister(CreateView):
 
     def form_valid(self, form):
         user = form.save()
+        Profile.objects.create(user=user)
         login(self.request, user)
         return redirect('index')
 
@@ -115,6 +116,7 @@ class TeacherRegister(CreateView):
 
     def form_valid(self, form):
         user = form.save()
+        Profile.objects.create(user=user)
         login(self.request, user)
         return redirect('index')
 
